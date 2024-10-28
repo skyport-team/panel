@@ -521,6 +521,14 @@ updateSelectedFiles();
       const protocol = window.location.protocol === 'https:' ? 'wss' : 'ws';
       const instanceId = '<%= req.params.id %>';
 
+      function isValidJson(str) {
+            try {
+              JSON.parse(str);
+            } catch (e) {
+              return false;
+            }
+            return true;
+        }
 
       function formatBytes(bytes, decimals = 2) {
             if (bytes === 0) return '0 Bytes';
@@ -534,7 +542,8 @@ updateSelectedFiles();
       const statsWs = new WebSocket(`${protocol}://${window.location.hostname}:${window.location.port}/stats/${instanceId}`);
 
       statsWs.onmessage = event => {
-        const stats = JSON.parse(event.data);
+        if (isValidJson(event.data)) {
+            const stats = JSON.parse(event.data);
             if (stats.error) {
                 console.error('Error fetching stats:', stats.error);
                 return;
@@ -544,7 +553,9 @@ updateSelectedFiles();
             const diskLimitRaw = 10 * 1024; // Assuming 10GB limit
             const diskUsagePercent = (diskUsageRaw / diskLimitRaw * 100).toFixed(2);
             document.getElementById('diskUsage').textContent = `${formatBytes(diskUsageRaw * 1024 * 1024)} / ${formatBytes(diskLimitRaw * 1024 * 1024)} (${diskUsagePercent}%)`;
-        
+          } else {
+            console.log('Received non-JSON data:', event.data);
+          }
       }
     
    </script>
