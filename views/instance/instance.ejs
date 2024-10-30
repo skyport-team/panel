@@ -278,11 +278,11 @@
                 term.write('\x1b[0m' + trimmedLine);
         
                 if (trimmedLine.includes("Working on")) {
-                    term.write('\r\n\u001b[1m\u001b[33m[panel] \u001b[0mreconnecting socket, hold on...\r\n');
+                    term.write('\r\n\u001b[1m\u001b[33m[panel] \u001b[0mreconnecting socket, hold on...');
                     term.clear();
                     ws.close();
                 }
-        
+                
                 if (trimmedLine.includes("skyportd instance appears to be down")) {
                     ws.close();
                     document.getElementById('daemonIsDown').classList.remove('hidden');
