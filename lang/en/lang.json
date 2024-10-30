@@ -7,6 +7,7 @@
     "in": "Hindi",
     "it": "Italian",    
     "fr": "French",
+    "pt": "Portuguese",
     "manageInstance": "Manage Instance",
     "instanceViewDetailText": "View, update or manage an instance on the Skyport panel.",
     "fivezerozeroInstanceError": "500 SERVER ERROR",
