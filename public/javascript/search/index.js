@@ -8,8 +8,8 @@ _____/ /____  ______  ____  _____/ /_
          /   
 
 
-https://github.com/skyportlabs
-https://skyport.dev
+https://github.com/skyport-team
+https://skyport.overnode.fr
 
 
 (c) 2024 Matt James and contributors.
