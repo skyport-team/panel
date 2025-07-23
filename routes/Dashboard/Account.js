@@ -11,7 +11,8 @@ const { db } = require("../../handlers/db.js");
 const bcrypt = require("bcrypt");
 const speakeasy = require("speakeasy");
 const qrcode = require("qrcode");
-const saltRounds = process.env.SALT_ROUNDS || 10;
+const config = require("../../config.json");
+const saltRounds = config.saltRounds || 10;
 const log = new (require("cat-loggr"))();
 const { isAuthenticated } = require("../../handlers/auth.js");
 
