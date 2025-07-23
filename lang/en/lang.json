@@ -118,8 +118,6 @@
   "nodesText": "A list of all the nodes set up on the Skyport panel.",
   "plugins": "Plugins",
   "signOut": "Sign Out",
-  "accountJSON": "Account - JSON",
-  "nodesJSON": "Nodes - JSON",
   "image": "Image",
   "images": "Images",
   "imagesText": "A list of all the images on the Skyport panel.",

@@ -118,8 +118,6 @@
   "nodesText": "Lista de todos los nodos configurados en el panel de Skyport.",
   "plugins": "Plugins",
   "signOut": "Cerrar sesión",
-  "accountJSON": "Cuenta - JSON",
-  "nodesJSON": "Nodos - JSON",
   "image": "Imagen",
   "images": "Imágenes",
   "imagesText": "Lista de todas las imágenes en el panel de Skyport.",

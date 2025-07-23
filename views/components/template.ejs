@@ -1,12 +1,17 @@
 <!doctype html>
 <html class="h-full w-full">
+   <!--
+     
+   HEAD SECTION
+     
+   -->
    <head>
       <title><%= name %></title>
       <% if (logo == true) { %>
          <link rel="icon" href="/assets/logo.png" type="image/x-icon">
-         <% }  else { %>
-            <link rel="icon" href="https://i.imgur.com/uvDunAR.png" type="image/x-icon">
-         <% } %>
+      <% }  else { %>
+         <link rel="icon" href="https://i.imgur.com/uvDunAR.png" type="image/x-icon">
+      <% } %>
 
       <meta charset="UTF-8">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -14,63 +19,16 @@
       <meta content="<%= ogDescription %>" property="og:description">
       <link href="/assets/tailwind.css" rel="stylesheet">
       <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+      <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+      <link href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
    </head>
    <body style="font-family: 'Public Sans'" class="<%= theme['paneltheme-color'] %> h-full w-full">
       <div>
+      <!-- Todo : remove this style for tailwind css-->
       <style>
 
-#loader {
-   transition: opacity 0.5s ease;
-}
-
-.opacity-0 {
-   opacity: 0;
-}
-
-.opacity-1 {
-   opacity: 1;
-}
-
-         .collapsed span {
-            display: none;
-         }
-         .collapsed p {
-            display: none;
-         }
-         .collapsed h1 {
-            display: none;
-         }
-         .collapsed .nav-link svg {
-            margin-right: 0;
-         }
-         .collapsed {
-            width: 4% !important;
-         }
-         .colcont {
-            padding-left: 4.2rem
-         }
-         .colcontextream {
-            padding-left: 1.2rem
-         }
-         .colcont-right {
-            padding-right: 14.2rem
-         }
-         .transition {
-            transition: all 0.3s ease-in-out;
-         }
          .sidebar nav ul {
             position: relative;
-         }
-         #active-background {
-            position: absolute;
-            left: 1rem;
-            width: calc(100% - 2rem);
-            height: 2.25rem;
-            border-radius: 0.5rem;
-            transition: transform 0.2s ease-in-out;
-            z-index: 0;
          }
          .nav-link {
             position: relative;
@@ -96,74 +54,14 @@
                display: block;
                transform: translateX(0);
             }
-            #sidebar-toggle {
-               display: block;
-            }
             .sidebar.expanded {
                width: 100%;
             }
          }
-
-         .paneltheme-hover:hover {
-            background-color: rgb(0, 0, 0, 0.1);
-         }
-
-   .sidebar-left {
-      left: 0;
-   }
-
-   .sidebar-right {
-      right: 0;
-   }
+         
 
 
-.loading-spin {
-  svg {
-    fill: #868686;
-    
-    path:nth-of-type(1) {
-      animation: pulse 1s infinite linear;
-    }
-    path:nth-of-type(2) {
-      animation: pulse 1s -.083s infinite linear;
-    }
-    path:nth-of-type(3) {
-      animation: pulse 1s -.166s infinite linear;
-    }
-    path:nth-of-type(4) {
-      animation: pulse 1s -.249s infinite linear;
-    }
-    path:nth-of-type(5) {
-      animation: pulse 1s -.332s infinite linear;
-    }
-    path:nth-of-type(6) {
-      animation: pulse 1s -.415s infinite linear;
-    }
-    path:nth-of-type(7) {
-      animation: pulse 1s -.498s infinite linear;
-    }
-    path:nth-of-type(8) {
-      animation: pulse 1s -.581s infinite linear;
-    }  
-    path:nth-of-type(9) {
-      animation: pulse 1s -.664s infinite linear;
-    }
-    path:nth-of-type(10) {
-      animation: pulse 1s -.747s infinite linear;
-    }
-    path:nth-of-type(11) {
-      animation: pulse 1s -.83s infinite linear;
-    }
-    path:nth-of-type(12) {
-      animation: pulse 1s -.913s infinite linear;
-    }
-  }
-}
-  
-@keyframes pulse {
-  50% { fill: #868686; }
-  to { fill: rgba(134,134,134,.4); }
-}
+
       </style>
 <script>
    document.addEventListener('DOMContentLoaded', () => {
@@ -172,7 +70,7 @@
 
       setTimeout(() => {
          loader.classList.add('opacity-0');
-         content.classList.add('opacity-1');
+         content.classList.add('opacity-100');
       
          setTimeout(() => {
             loader.style.display = 'none';
@@ -188,24 +86,29 @@
       const colcont = document.getElementById('colcont');
 
       if ('<%= theme["sidebar-direction"] %>' === 'right') {
-         sidebar.classList.add('sidebar-right');
+         sidebar.classList.add('right-0');
          colcont.classList.add('colcontextream');
          colcont.classList.add('colcont-right');
          sidebar2.classList.remove('rounded-r-3xl', 'rounded-l-lg');
          sidebar2.classList.add('rounded-r-lg', 'rounded-l-3xl');
       } else {
-         sidebar.classList.add('sidebar-left');
+         sidebar.classList.add('left-0');
       }
    });
 </script>
 
+      <!--
+     
+      MOBILE TOGGLE SECTION
+     
+      -->
       <button id="mobile-sidebar-toggle" class="lg:hidden fixed top-4 left-4 z-50 w-fit p-2 rounded-xl text-white border border-white/5 bg-[#141414] hover:scale-110 active:scale-100 duration-200 transition-all">
          <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
             <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
          </svg>
       </button>
       <!-- Static sidebar for desktop -->
-      <div id="pc-sidebar" class="sidebar transition hidden lg:fixed lg:inset-y-0 lg:z-50 p-2 lg:flex lg:w-56 lg:flex-col">
+      <div id="pc-sidebar" class="sidebar transition-all duration-300 ease-in-out hidden lg:fixed lg:inset-y-0 lg:z-50 p-2 lg:flex lg:w-56 lg:flex-col group group-[.collapsed]:w-[4%]">
          <div id="pc-sidebar2" class="flex grow flex-col gap-y-5 overflow-hidden rounded-r-3xl rounded-l-lg bg-transparent border border-white/5">
             <nav class="flex flex-1 flex-col">
                <div class="pl-6 pt-4 pb-4 flex">
@@ -213,31 +116,35 @@
                      <% if (logo == true) { %>
                      <img src="/assets/logo.png" class="h-7 w-7 rounded mr-3 inline-flex">
                      <% } %>
-                     <h1 class="text-white font-medium tracking-tight text-lg"><%= name %></h1>
+                     <h1 class="text-white font-medium tracking-tight text-lg group-[.collapsed]:hidden"><%= name %></h1>
                   </a>
                </div>
-                    <!-- User info -->
-     <div class="flex items-center space-x-4 py-4 px-4 border-y border-white/5">
-      <img class="h-8 w-8 rounded-xl" src="https://api.dicebear.com/9.x/thumbs/svg?seed=<%= user.username %>" alt="User avatar">
-      <div>
-        <p class="text-sm font-medium text-white"><%= user.username %></p>
-        <p class="text-xs text-neutral-500"><%= user.userId.substring(0, 6) %></p>
-      </div>
-    </div>
+                  <!--
+     
+      USER INFO SECTION
+     
+      -->
+                  <div class="flex items-center space-x-4 py-4 px-4 border-y border-white/5">
+                     <img class="h-8 w-8 rounded-xl" src="https://api.dicebear.com/9.x/thumbs/svg?seed=<%= user.username %>" alt="User avatar">
+                     <div class="group-[.collapsed]:hidden">
+                       <p class="text-sm font-medium text-white"><%= user.username %></p>
+                       <p class="text-xs text-neutral-500"><%= user.userId.substring(0, 6) %></p>
+                     </div>
+                  </div>
                <ul role="list" class="flex flex-1 flex-col gap-y-7 mt-2">
                   <li>
                      <ul role="list" class="-mx-2 space-y-1">
                         <div id="active-background" class="absolute left-0 w-full h-8 bg-white/5 rounded-2xl transition-all duration-300 ease-in-out"></div>
                         <li>
-                           <a href="/instances" class="transition nav-link mt-1 text-neutral-400 px-4 mx-4 group flex gap-x-3 py-1.5 rounded-xl text-sm leading-6 font-normal" searchdata="container instances servers" subterm="jegli:/server/servername">
-                              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="currentColor" class="w-5 mt-0.5 h-5"><rect width="256" height="256" fill="none"/><path d="M220,169.09l-92,53.65L36,169.09A8,8,0,0,0,28,182.91l96,56a8,8,0,0,0,8.06,0l96-56A8,8,0,1,0,220,169.09Z"/><path d="M220,121.09l-92,53.65L36,121.09A8,8,0,0,0,28,134.91l96,56a8,8,0,0,0,8.06,0l96-56A8,8,0,1,0,220,121.09Z"/><path d="M28,86.91l96,56a8,8,0,0,0,8.06,0l96-56a8,8,0,0,0,0-13.82l-96-56a8,8,0,0,0-8.06,0l-96,56a8,8,0,0,0,0,13.82Z"/></svg>
-                              <span><%= req.translations.instances %></span>
+                           <a href="/instances" class="transition-all duration-300 ease-in-out nav-link mt-1 text-neutral-400 px-4 mx-4 group flex gap-x-3 py-1.5 rounded-xl text-sm leading-6 font-normal" searchdata="container instances servers" subterm="jegli:/server/servername">
+                              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="currentColor" class="w-5 mt-0.5 h-5 group-[.collapsed]:mr-0"><rect width="256" height="256" fill="none"/><path d="M220,169.09l-92,53.65L36,169.09A8,8,0,0,0,28,182.91l96,56a8,8,0,0,0,8.06,0l96-56A8,8,0,1,0,220,169.09Z"/><path d="M220,121.09l-92,53.65L36,121.09A8,8,0,0,0,28,134.91l96,56a8,8,0,0,0,8.06,0l96-56A8,8,0,1,0,220,121.09Z"/><path d="M28,86.91l96,56a8,8,0,0,0,8.06,0l96-56a8,8,0,0,0,0-13.82l-96-56a8,8,0,0,0-8.06,0l-96,56a8,8,0,0,0,0,13.82Z"/></svg>
+                              <span class="group-[.collapsed]:hidden"><%= req.translations.instances %></span>
                            </a>
-                           <a href="/account" searchdata="account profile <%= user.username %>" class="transition nav-link mt-1 text-neutral-400 px-4 mx-4 group flex gap-x-3 py-1.5 rounded-xl text-sm leading-6 font-normal">
-                               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 mt-0.5 h-5">
+                           <a href="/account" searchdata="account profile <%= user.username %>" class="transition-all duration-300 ease-in-out nav-link mt-1 text-neutral-400 px-4 mx-4 group flex gap-x-3 py-1.5 rounded-xl text-sm leading-6 font-normal">
+                               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 mt-0.5 h-5 group-[.collapsed]:mr-0">
                                  <path d="M10 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM3.465 14.493a1.23 1.23 0 0 0 .41 1.412A9.957 9.957 0 0 0 10 18c2.31 0 4.438-.784 6.131-2.1.43-.333.604-.903.408-1.41a7.002 7.002 0 0 0-13.074.003Z" />
                                </svg>                                                           
-                              <span><%= req.translations.account %></span>
+                              <span class="group-[.collapsed]:hidden"><%= req.translations.account %></span>
                            </a>
                            <% plugins.forEach(plugin => { %>
                               <% if (plugin.sidebar) { %>
@@ -286,86 +193,86 @@
                           
                         </li>
                         <% if (user.admin == true) { %>
-                        <p class="pl-8 text-neutral-400 text-xs font-medium pt-6 pb-2"><span>Admin Panel</span></p>
+                        <p class="pl-8 text-neutral-400 text-xs font-medium pt-6 pb-2 group-[.collapsed]:hidden"><span>Admin Panel</span></p>
                         <li>
-                           <a href="/admin/overview" searchdata="admin overview control" class=" transition nav-link mt-1 text-neutral-400 px-4 mx-4 group flex gap-x-3 py-1.5 rounded-xl text-sm leading-6 font-normal">
-                              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="currentColor" class="w-5 mt-0.5 h-5"><rect width="256" height="256" fill="none"/><path d="M224,120v96a8,8,0,0,1-8,8H160a8,8,0,0,1-8-8V164a4,4,0,0,0-4-4H108a4,4,0,0,0-4,4v52a8,8,0,0,1-8,8H40a8,8,0,0,1-8-8V120a16,16,0,0,1,4.69-11.31l80-80a16,16,0,0,1,22.62,0l80,80A16,16,0,0,1,224,120Z"/></svg>
-                              <span><%= req.translations.overview %></span>
+                           <a href="/admin/overview" searchdata="admin overview control" class="transition-all duration-300 ease-in-out nav-link mt-1 text-neutral-400 px-4 mx-4 group flex gap-x-3 py-1.5 rounded-xl text-sm leading-6 font-normal">
+                              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="currentColor" class="w-5 mt-0.5 h-5 group-[.collapsed]:mr-0"><rect width="256" height="256" fill="none"/><path d="M224,120v96a8,8,0,0,1-8,8H160a8,8,0,0,1-8-8V164a4,4,0,0,0-4-4H108a4,4,0,0,0-4,4v52a8,8,0,0,1-8,8H40a8,8,0,0,1-8-8V120a16,16,0,0,1,4.69-11.31l80-80a16,16,0,0,1,22.62,0l80,80A16,16,0,0,1,224,120Z"/></svg>
+                              <span class="group-[.collapsed]:hidden"><%= req.translations.overview %></span>
                            </a>
                         </li>
                         <li>
-                           <a href="/admin/settings" class=" transition nav-link mt-1 text-neutral-400 px-4 mx-4 group flex gap-x-3 py-1.5 rounded-xl text-sm leading-6 font-normal">
-                              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="currentColor" class="w-5 mt-0.5 h-5"><rect width="256" height="256" fill="none"/><path d="M237.94,107.21a8,8,0,0,0-3.89-5.4l-29.83-17-.12-33.62a8,8,0,0,0-2.83-6.08,111.91,111.91,0,0,0-36.72-20.67,8,8,0,0,0-6.46.59L128,41.85,97.88,25a8,8,0,0,0-6.47-.6A111.92,111.92,0,0,0,54.73,45.15a8,8,0,0,0-2.83,6.07l-.15,33.65-29.83,17a8,8,0,0,0-3.89,5.4,106.47,106.47,0,0,0,0,41.56,8,8,0,0,0,3.89,5.4l29.83,17,.12,33.63a8,8,0,0,0,2.83,6.08,111.91,111.91,0,0,0,36.72,20.67,8,8,0,0,0,6.46-.59L128,214.15,158.12,231a7.91,7.91,0,0,0,3.9,1,8.09,8.09,0,0,0,2.57-.42,112.1,112.1,0,0,0,36.68-20.73,8,8,0,0,0,2.83-6.07l.15-33.65,29.83-17a8,8,0,0,0,3.89-5.4A106.47,106.47,0,0,0,237.94,107.21ZM128,168a40,40,0,1,1,40-40A40,40,0,0,1,128,168Z"/></svg>
-                              <span><%= req.translations.settings %></span>
+                           <a href="/admin/settings" class="transition-all duration-300 ease-in-out nav-link mt-1 text-neutral-400 px-4 mx-4 group flex gap-x-3 py-1.5 rounded-xl text-sm leading-6 font-normal">
+                              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="currentColor" class="w-5 mt-0.5 h-5 group-[.collapsed]:mr-0"><rect width="256" height="256" fill="none"/><path d="M237.94,107.21a8,8,0,0,0-3.89-5.4l-29.83-17-.12-33.62a8,8,0,0,0-2.83-6.08,111.91,111.91,0,0,0-36.72-20.67,8,8,0,0,0-6.46.59L128,41.85,97.88,25a8,8,0,0,0-6.47-.6A111.92,111.92,0,0,0,54.73,45.15a8,8,0,0,0-2.83,6.07l-.15,33.65-29.83,17a8,8,0,0,0-3.89,5.4,106.47,106.47,0,0,0,0,41.56,8,8,0,0,0,3.89,5.4l29.83,17,.12,33.63a8,8,0,0,0,2.83,6.08,111.91,111.91,0,0,0,36.72,20.67,8,8,0,0,0,6.46-.59L128,214.15,158.12,231a7.91,7.91,0,0,0,3.9,1,8.09,8.09,0,0,0,2.57-.42,112.1,112.1,0,0,0,36.68-20.73,8,8,0,0,0,2.83-6.07l.15-33.65,29.83-17a8,8,0,0,0,3.89-5.4A106.47,106.47,0,0,0,237.94,107.21ZM128,168a40,40,0,1,1,40-40A40,40,0,0,1,128,168Z"/></svg>
+                              <span class="group-[.collapsed]:hidden"><%= req.translations.settings %></span>
                            </a>
                         </li>
                         <li>
-                           <a href="/admin/analytics" class=" transition nav-link mt-1 text-neutral-400 px-4 mx-4 group flex gap-x-3 py-1.5 rounded-xl text-sm leading-6 font-normal">
-                              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="currentColor" class="w-5 mt-0.5 h-5"><rect width="256" height="256" fill="none"/><path d="M216,40H40A16,16,0,0,0,24,56V200a16,16,0,0,0,16,16H216a16,16,0,0,0,16-16V56A16,16,0,0,0,216,40ZM200,176a8,8,0,0,1,0,16H56a8,8,0,0,1-8-8V72a8,8,0,0,1,16,0v62.92l34.88-29.07a8,8,0,0,1,9.56-.51l43,28.69,43.41-36.18a8,8,0,0,1,10.24,12.3l-48,40a8,8,0,0,1-9.56.51l-43-28.69L64,155.75V176Z"/></svg>
-                              <span><%= req.translations.analytics %></span>
+                           <a href="/admin/analytics" class="transition-all duration-300 ease-in-out nav-link mt-1 text-neutral-400 px-4 mx-4 group flex gap-x-3 py-1.5 rounded-xl text-sm leading-6 font-normal">
+                              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="currentColor" class="w-5 mt-0.5 h-5 group-[.collapsed]:mr-0"><rect width="256" height="256" fill="none"/><path d="M216,40H40A16,16,0,0,0,24,56V200a16,16,0,0,0,16,16H216a16,16,0,0,0,16-16V56A16,16,0,0,0,216,40ZM200,176a8,8,0,0,1,0,16H56a8,8,0,0,1-8-8V72a8,8,0,0,1,16,0v62.92l34.88-29.07a8,8,0,0,1,9.56-.51l43,28.69,43.41-36.18a8,8,0,0,1,10.24,12.3l-48,40a8,8,0,0,1-9.56.51l-43-28.69L64,155.75V176Z"/></svg>
+                              <span class="group-[.collapsed]:hidden"><%= req.translations.analytics %></span>
                            </a>
                         </li>
                         <li>
-                           <a href="/admin/users" class=" transition nav-link mt-1 text-neutral-400 px-4 mx-4 group flex gap-x-3 py-1.5 rounded-xl text-sm leading-6 font-normal">
-                              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 mt-0.5 h-5">
+                           <a href="/admin/users" class="transition-all duration-300 ease-in-out nav-link mt-1 text-neutral-400 px-4 mx-4 group flex gap-x-3 py-1.5 rounded-xl text-sm leading-6 font-normal">
+                              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 mt-0.5 h-5 group-[.collapsed]:mr-0">
                                  <path d="M7 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM14.5 9a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5ZM1.615 16.428a1.224 1.224 0 0 1-.569-1.175 6.002 6.002 0 0 1 11.908 0c.058.467-.172.92-.57 1.174A9.953 9.953 0 0 1 7 18a9.953 9.953 0 0 1-5.385-1.572ZM14.5 16h-.106c.07-.297.088-.611.048-.933a7.47 7.47 0 0 0-1.588-3.755 4.502 4.502 0 0 1 5.874 2.636.818.818 0 0 1-.36.98A7.465 7.465 0 0 1 14.5 16Z" />
                                </svg>                               
-                              <span><%= req.translations.users %></span>
+                              <span class="group-[.collapsed]:hidden"><%= req.translations.users %></span>
                            </a>
                         </li>
                         <li>
-                           <a href="/admin/instances" class=" transition nav-link mt-1 text-neutral-400 px-4 mx-4 group flex gap-x-3 py-1.5 rounded-xl text-sm leading-6 font-normal">
-                              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="currentColor" class="w-5 mt-0.5 h-5"><rect width="256" height="256" fill="none"/><path d="M24,80a8,8,0,0,1,4-6.91l96-56a8,8,0,0,1,8.06,0l96,56a8,8,0,0,1,0,13.82l-96,56a8,8,0,0,1-8.06,0l-96-56A8,8,0,0,1,24,80Zm196,41.09-92,53.65L36,121.09A8,8,0,0,0,28,134.91l96,56a8,8,0,0,0,8.06,0l96-56A8,8,0,1,0,220,121.09ZM232,192H216V176a8,8,0,0,0-16,0v16H184a8,8,0,0,0,0,16h16v16a8,8,0,0,0,16,0V208h16a8,8,0,0,0,0-16Zm-92,23.76-12,7L36,169.09A8,8,0,0,0,28,182.91l96,56a8,8,0,0,0,8.06,0l16-9.33A8,8,0,1,0,140,215.76Z"/></svg>
-                              <span><%= req.translations.instances %></span>
+                           <a href="/admin/instances" class="transition-all duration-300 ease-in-out nav-link mt-1 text-neutral-400 px-4 mx-4 group flex gap-x-3 py-1.5 rounded-xl text-sm leading-6 font-normal">
+                              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="currentColor" class="w-5 mt-0.5 h-5 group-[.collapsed]:mr-0"><rect width="256" height="256" fill="none"/><path d="M24,80a8,8,0,0,1,4-6.91l96-56a8,8,0,0,1,8.06,0l96,56a8,8,0,0,1,0,13.82l-96,56a8,8,0,0,1-8.06,0l-96-56A8,8,0,0,1,24,80Zm196,41.09-92,53.65L36,121.09A8,8,0,0,0,28,134.91l96,56a8,8,0,0,0,8.06,0l96-56A8,8,0,1,0,220,121.09ZM232,192H216V176a8,8,0,0,0-16,0v16H184a8,8,0,0,0,0,16h16v16a8,8,0,0,0,16,0V208h16a8,8,0,0,0,0-16Zm-92,23.76-12,7L36,169.09A8,8,0,0,0,28,182.91l96,56a8,8,0,0,0,8.06,0l16-9.33A8,8,0,1,0,140,215.76Z"/></svg>
+                              <span class="group-[.collapsed]:hidden"><%= req.translations.instances %></span>
                            </a>
                         </li>
                         <li>
-                           <a href="/admin/nodes" class=" transition nav-link mt-1 text-neutral-400 px-4 mx-4 group flex gap-x-3 py-1.5 rounded-xl text-sm leading-6 font-normal">
-                              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="currentColor" class="w-5 mt-0.5 h-5"><rect width="256" height="256" fill="none"/><path d="M208,40H48A16,16,0,0,0,32,56v48a16,16,0,0,0,16,16H208a16,16,0,0,0,16-16V56A16,16,0,0,0,208,40ZM180,92a12,12,0,1,1,12-12A12,12,0,0,1,180,92Z"/><path d="M208,136H48a16,16,0,0,0-16,16v48a16,16,0,0,0,16,16H208a16,16,0,0,0,16-16V152A16,16,0,0,0,208,136Zm-28,52a12,12,0,1,1,12-12A12,12,0,0,1,180,188Z"/></svg>
-                              <span><%= req.translations.nodes %></span>
+                           <a href="/admin/nodes" class="transition-all duration-300 ease-in-out nav-link mt-1 text-neutral-400 px-4 mx-4 group flex gap-x-3 py-1.5 rounded-xl text-sm leading-6 font-normal">
+                              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="currentColor" class="w-5 mt-0.5 h-5 group-[.collapsed]:mr-0"><rect width="256" height="256" fill="none"/><path d="M208,40H48A16,16,0,0,0,32,56v48a16,16,0,0,0,16,16H208a16,16,0,0,0,16-16V56A16,16,0,0,0,208,40ZM180,92a12,12,0,1,1,12-12A12,12,0,0,1,180,92Z"/><path d="M208,136H48a16,16,0,0,0-16,16v48a16,16,0,0,0,16,16H208a16,16,0,0,0,16-16V152A16,16,0,0,0,208,136Zm-28,52a12,12,0,1,1,12-12A12,12,0,0,1,180,188Z"/></svg>
+                              <span class="group-[.collapsed]:hidden"><%= req.translations.nodes %></span>
                            </a>
                         </li>
                         <li>
-                           <a href="/admin/images" class=" transition nav-link mt-1 text-neutral-400 px-4 mx-4 group flex gap-x-3 py-1.5 rounded-xl text-sm leading-6 font-normal">
-                              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="currentColor" class="w-5 mt-0.5 h-5"><rect width="256" height="256" fill="none"/><path d="M243.31,136,144,36.69A15.86,15.86,0,0,0,132.69,32H40a8,8,0,0,0-8,8v92.69A15.86,15.86,0,0,0,36.69,144L136,243.31a16,16,0,0,0,22.63,0l84.68-84.68a16,16,0,0,0,0-22.63ZM84,96A12,12,0,1,1,96,84,12,12,0,0,1,84,96Z"/></svg>
-                              <span><%= req.translations.images %></span>
+                           <a href="/admin/images" class="transition-all duration-300 ease-in-out nav-link mt-1 text-neutral-400 px-4 mx-4 group flex gap-x-3 py-1.5 rounded-xl text-sm leading-6 font-normal">
+                              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="currentColor" class="w-5 mt-0.5 h-5 group-[.collapsed]:mr-0"><rect width="256" height="256" fill="none"/><path d="M243.31,136,144,36.69A15.86,15.86,0,0,0,132.69,32H40a8,8,0,0,0-8,8v92.69A15.86,15.86,0,0,0,36.69,144L136,243.31a16,16,0,0,0,22.63,0l84.68-84.68a16,16,0,0,0,0-22.63ZM84,96A12,12,0,1,1,96,84,12,12,0,0,1,84,96Z"/></svg>
+                              <span class="group-[.collapsed]:hidden"><%= req.translations.images %></span>
                            </a>
                         </li>
                         <li>
-                           <a href="/admin/apikeys" class=" transition nav-link mt-1 text-neutral-400 px-4 mx-4 group flex gap-x-3 py-1.5 rounded-xl text-sm leading-6 font-normal">
-                              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="currentColor" class="w-5 mt-0.5 h-5"><rect width="256" height="256" fill="none"/><path d="M216.57,39.43A80,80,0,0,0,83.91,120.78L28.69,176A15.86,15.86,0,0,0,24,187.31V216a16,16,0,0,0,16,16H72a8,8,0,0,0,8-8V208H96a8,8,0,0,0,8-8V184h16a8,8,0,0,0,5.66-2.34l9.56-9.57A79.73,79.73,0,0,0,160,176h.1A80,80,0,0,0,216.57,39.43ZM180,92a16,16,0,1,1,16-16A16,16,0,0,1,180,92Z"/></svg>
-                              <span><%= req.translations.APIKeys %></span>
+                           <a href="/admin/apikeys" class="transition-all duration-300 ease-in-out nav-link mt-1 text-neutral-400 px-4 mx-4 group flex gap-x-3 py-1.5 rounded-xl text-sm leading-6 font-normal">
+                              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="currentColor" class="w-5 mt-0.5 h-5 group-[.collapsed]:mr-0"><rect width="256" height="256" fill="none"/><path d="M216.57,39.43A80,80,0,0,0,83.91,120.78L28.69,176A15.86,15.86,0,0,0,24,187.31V216a16,16,0,0,0,16,16H72a8,8,0,0,0,8-8V208H96a8,8,0,0,0,8-8V184h16a8,8,0,0,0,5.66-2.34l9.56-9.57A79.73,79.73,0,0,0,160,176h.1A80,80,0,0,0,216.57,39.43ZM180,92a16,16,0,1,1,16-16A16,16,0,0,1,180,92Z"/></svg>
+                              <span class="group-[.collapsed]:hidden"><%= req.translations.APIKeys %></span>
                            </a>
                         </li>
                         <li>
-                           <a href="/admin/auditlogs" searchdata="audit logs admin" class=" transition nav-link mt-1 text-neutral-400 px-4 mx-4 group flex gap-x-3 py-1.5 rounded-xl text-sm leading-6 font-normal">
-                              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="currentColor" class="w-5 mt-0.5 h-5"><rect width="256" height="256" fill="none"/><path d="M220.8,169.6A8,8,0,0,0,216,168h-8V64a32,32,0,0,0-32-32H40A32,32,0,0,0,8,64C8,77.61,18.05,85.54,19.2,86.4h0A7.89,7.89,0,0,0,24,88a8,8,0,0,0,4.87-14.33h0C28.83,73.62,24,69.74,24,64a16,16,0,0,1,32,0V192a32,32,0,0,0,32,32H200a32,32,0,0,0,32-32C232,178.39,222,170.46,220.8,169.6ZM104,96h64a8,8,0,0,1,0,16H104a8,8,0,0,1,0-16Zm-8,40a8,8,0,0,1,8-8h64a8,8,0,0,1,0,16H104A8,8,0,0,1,96,136Zm104,72H107.71A31.82,31.82,0,0,0,112,192a26.92,26.92,0,0,0-1.21-8h102a12.58,12.58,0,0,1,3.23,8A16,16,0,0,1,200,208Z"/></svg>
-                              <span><%= req.translations.auditLogs %></span>
+                           <a href="/admin/auditlogs" searchdata="audit logs admin" class="transition-all duration-300 ease-in-out nav-link mt-1 text-neutral-400 px-4 mx-4 group flex gap-x-3 py-1.5 rounded-xl text-sm leading-6 font-normal">
+                              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="currentColor" class="w-5 mt-0.5 h-5 group-[.collapsed]:mr-0"><rect width="256" height="256" fill="none"/><path d="M220.8,169.6A8,8,0,0,0,216,168h-8V64a32,32,0,0,0-32-32H40A32,32,0,0,0,8,64C8,77.61,18.05,85.54,19.2,86.4h0A7.89,7.89,0,0,0,24,88a8,8,0,0,0,4.87-14.33h0C28.83,73.62,24,69.74,24,64a16,16,0,0,1,32,0V192a32,32,0,0,0,32,32H200a32,32,0,0,0,32-32C232,178.39,222,170.46,220.8,169.6ZM104,96h64a8,8,0,0,1,0,16H104a8,8,0,0,1,0-16Zm-8,40a8,8,0,0,1,8-8h64a8,8,0,0,1,0,16H104A8,8,0,0,1,96,136Zm104,72H107.71A31.82,31.82,0,0,0,112,192a26.92,26.92,0,0,0-1.21-8h102a12.58,12.58,0,0,1,3.23,8A16,16,0,0,1,200,208Z"/></svg>
+                              <span class="group-[.collapsed]:hidden"><%= req.translations.auditLogs %></span>
                            </a>
                         </li>
 
                         <li>
-                           <a href="/admin/plugins" searchdata="addons plugins admin" class=" transition nav-link mt-1 text-neutral-400 px-4 mx-4 group flex gap-x-3 py-1.5 rounded-xl text-sm leading-6 font-normal">
-                              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="currentColor" class="w-5 mt-0.5 h-5"><rect width="256" height="256" fill="none"/><path d="M165.78,224H208a16,16,0,0,0,16-16V170.35A8,8,0,0,0,212.94,163a23.37,23.37,0,0,1-8.94,1.77c-13.23,0-24-11.1-24-24.73s10.77-24.73,24-24.73a23.37,23.37,0,0,1,8.94,1.77A8,8,0,0,0,224,109.65V72a16,16,0,0,0-16-16H171.78a35.36,35.36,0,0,0,.22-4,36,36,0,0,0-72,0,35.36,35.36,0,0,0,.22,4H64A16,16,0,0,0,48,72v32.22a35.36,35.36,0,0,0-4-.22,36,36,0,0,0,0,72,35.36,35.36,0,0,0,4-.22V208a16,16,0,0,0,16,16h42.22"/></svg>
-                              <span><%= req.translations.plugins %></span>
+                           <a href="/admin/plugins" searchdata="addons plugins admin" class="transition-all duration-300 ease-in-out nav-link mt-1 text-neutral-400 px-4 mx-4 group flex gap-x-3 py-1.5 rounded-xl text-sm leading-6 font-normal">
+                              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="currentColor" class="w-5 mt-0.5 h-5 group-[.collapsed]:mr-0"><rect width="256" height="256" fill="none"/><path d="M165.78,224H208a16,16,0,0,0,16-16V170.35A8,8,0,0,0,212.94,163a23.37,23.37,0,0,1-8.94,1.77c-13.23,0-24-11.1-24-24.73s10.77-24.73,24-24.73a23.37,23.37,0,0,1,8.94,1.77A8,8,0,0,0,224,109.65V72a16,16,0,0,0-16-16H171.78a35.36,35.36,0,0,0,.22-4,36,36,0,0,0-72,0,35.36,35.36,0,0,0,.22,4H64A16,16,0,0,0,48,72v32.22a35.36,35.36,0,0,0-4-.22,36,36,0,0,0,0,72,35.36,35.36,0,0,0,4-.22V208a16,16,0,0,0,16,16h42.22"/></svg>
+                              <span class="group-[.collapsed]:hidden"><%= req.translations.plugins %></span>
                            </a>
                         </li>
                         <% } %>
                      </ul>
                   </li>
                   <li class="mt-auto border-t border-white/5">
-                     <a href="/auth/logout" class="group -mx-2 flex gap-x-3 rounded-xl pl-6 py-4 text-sm font-medium leading-6 text-neutral-500 transition hover:text-white">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 mt-0.5 h-5">
+                     <a href="/auth/logout" class="group -mx-2 flex gap-x-3 rounded-xl pl-6 py-4 text-sm font-medium leading-6 text-neutral-500 transition-all duration-300 ease-in-out hover:text-white">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 mt-0.5 h-5 group-[.collapsed]:mr-0">
                            <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 9V5.25A2.25 2.25 0 0 1 10.5 3h6a2.25 2.25 0 0 1 2.25 2.25v13.5A2.25 2.25 0 0 1 16.5 21h-6a2.25 2.25 0 0 1-2.25-2.25V15m-3 0-3-3m0 0 3-3m-3 3H15" />
                         </svg>
-                        <span><%= req.translations.signOut %></span>
+                        <span class="group-[.collapsed]:hidden"><%= req.translations.signOut %></span>
                      </a>
                   </li>
                </ul>
             </nav>
          </div>
       </div>
-      <div id="colcont" class="lg:pl-56">
+      <div id="colcont" class="lg:pl-56 group-[.collapsed]:pl-[4.2rem] group-[.sidebar-right]:pl-[1.2rem] group-[.sidebar-right]:pr-[14.2rem]">
       <div class="sticky backdrop-blur top-0 z-40 flex h-16 shrink-0 items-center gap-x-4 bg-transparent px-4 sm:gap-x-6 sm:px-4 lg:px-4">
          <div class="hidden lg:block">
          <button type="button" id="sidebar-toggle" class="hidden lg:block w-fit p-2 mt-1 rounded-xl text-white border border-white/5 hover:scale-110 active:scale-100 duration-200">
@@ -394,39 +301,12 @@
                </div>
             </div>
             <script src="/javascript/search/index.js"></script>
-            <script>
-               
-               document.addEventListener('keydown', function(event) {
-                 if (event.key === 'F1') {
-                   event.preventDefault();
-                   document.getElementById('searchInput').focus();
-                 }
-               });
-               
-               function showSearchResults() {
-                 document.getElementById('searchResults').classList.remove('hidden');
-               }
-               
-               document.getElementById('searchInput').addEventListener('focus', showSearchResults);
-            </script>
-            <script>
-               function showSearchResults() {
-                   var searchResults = document.getElementById('searchResults');
-                   searchResults.classList.remove('hidden');
-               }
-               
-               document.addEventListener('click', function(event) {
-                   var searchInput = document.getElementById('searchInput');
-                   var searchResults = document.getElementById('searchResults');
-                   if (!searchInput.contains(event.target) && !searchResults.contains(event.target)) {
-                       searchResults.classList.add('hidden');
-                   }
-               });
-
-               
-            </script>
 <div class="flex items-center gap-x-4 lg:gap-x-6">
-   <!-- Profile dropdown -->
+   <!--
+     
+   DROPDOWN PROFILE
+     
+   -->
    <div class="relative mt-3 mr-4">
      <button type="button" class="-m-1.5 flex items-center p-1.5" id="user-menu-button" aria-expanded="false" aria-haspopup="true" onclick="toggleDropdown()">
        <img class="h-8 w-8 rounded-lg bg-transparent" src="https://api.dicebear.com/9.x/thumbs/svg?seed=<%= user.username %>" alt="">
@@ -435,6 +315,12 @@
          <span class="font-mono text-xs text-zinc-300 font-normal ml-1">(<%= user.userId.substring(0, 6) %>)</span>
        </span>
      </button>
+     
+     <!--
+     
+     DROPDOWN MENU LANGUAGES SELECTOR
+     
+     -->
      <div id="dropdown-menu" class="hidden absolute right-0 z-10 mt-2 w-56 bg-white rounded-xl shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none pb-2 transform opacity-0 scale-95 transition-all duration-200 ease-out">
        <div class="p-4">
          <div class="py-1 px-1">
@@ -521,24 +407,28 @@
              document.cookie = `${name}=${value || ''}${expires}; path=/`;
            }
          
-           function updateActiveBackground(link) {
+           function updateActiveBackground(link, instant = false) {
+             if (!link) return;
+             
              const linkRect = link.getBoundingClientRect();
              const navRect = link.closest('ul').getBoundingClientRect();
              const topOffset = linkRect.top - navRect.top + link.closest('ul').scrollTop;
          
+             if (instant) {
+               activeBackground.style.transition = 'none';
+             }
+             
              activeBackground.style.height = `${linkRect.height}px`;
              activeBackground.style.transform = `translateY(${topOffset}px)`;
          
+             if (instant) {
+               // Force a reflow
+               void activeBackground.offsetWidth;
+               activeBackground.style.transition = 'transform 0.3s ease, height 0.3s ease';
+             }
+         
              setCookie('lastActiveLink', link.id, 7);
              currentActiveLink = link;
-           }
-         
-           function moveActiveBackgroundInstantly(link) {
-             activeBackground.style.transition = 'none';
-             updateActiveBackground(link);
-             setTimeout(() => {
-               activeBackground.style.transition = 'transform 0.3s ease, height 0.3s ease';
-             }, 50);
            }
          
            function updateActiveLink(currentPath) {
@@ -547,11 +437,7 @@
                let currentpathx2 = currentPath.replace('instance/', 'instances');
                if (currentpathx2.startsWith(link.getAttribute('href'))) {
                  link.classList.add('active');
-                 if (currentActiveLink) {
-                   updateActiveBackground(link);
-                 } else {
-                   moveActiveBackgroundInstantly(link);
-                 }
+                 updateActiveBackground(link, true);
                  foundActive = true;
                } else {
                  link.classList.remove('active');
@@ -564,14 +450,8 @@
              }
            }
          
-           const lastActiveLinkId = getCookie('lastActiveLink');
-           if (lastActiveLinkId) {
-             const lastActiveLink = document.getElementById(lastActiveLinkId);
-             if (lastActiveLink) {
-               lastActiveLink.classList.add('active');
-               moveActiveBackgroundInstantly(lastActiveLink);
-             }
-           }
+           // Appliquer immédiatement au chargement de la page
+           updateActiveLink(window.location.pathname);
          
            function animatePageTransition(href) {
              if (isAnimating) return;
@@ -579,7 +459,7 @@
          
              contentSection.style.opacity = '0';
              contentSection.style.transform = 'translateX(-20px)';
-               window.location.href = href;
+             window.location.href = href;
            }
          
            navLinks.forEach(link => {
@@ -590,8 +470,6 @@
                animatePageTransition(href);
              });
            });
-         
-           updateActiveLink(window.location.pathname);
          
            window.addEventListener('popstate', () => {
              updateActiveLink(window.location.pathname);
@@ -652,7 +530,56 @@
          </script>         
          
 
-      <div id="loader" class="loading-spin fixed ml-56 mt-16 inset-0 flex items-center justify-center <%= theme['paneltheme-color'] %> transition-opacity duration-300 opacity-100 z-50">
+      <style>
+         .loading-spin {
+           svg {
+             fill: #868686;
+             
+             path:nth-of-type(1) {
+               animation: pulse 1s infinite linear;
+             }
+             path:nth-of-type(2) {
+               animation: pulse 1s -.083s infinite linear;
+             }
+             path:nth-of-type(3) {
+               animation: pulse 1s -.166s infinite linear;
+             }
+             path:nth-of-type(4) {
+               animation: pulse 1s -.249s infinite linear;
+             }
+             path:nth-of-type(5) {
+               animation: pulse 1s -.332s infinite linear;
+             }
+             path:nth-of-type(6) {
+               animation: pulse 1s -.415s infinite linear;
+             }
+             path:nth-of-type(7) {
+               animation: pulse 1s -.498s infinite linear;
+             }
+             path:nth-of-type(8) {
+               animation: pulse 1s -.581s infinite linear;
+             }  
+             path:nth-of-type(9) {
+               animation: pulse 1s -.664s infinite linear;
+             }
+             path:nth-of-type(10) {
+               animation: pulse 1s -.747s infinite linear;
+             }
+             path:nth-of-type(11) {
+               animation: pulse 1s -.83s infinite linear;
+             }
+             path:nth-of-type(12) {
+               animation: pulse 1s -.913s infinite linear;
+             }
+           }
+         }
+         
+         @keyframes pulse {
+           50% { fill: #868686; }
+           to { fill: rgba(134,134,134,.4); }
+         }
+      </style>
+      <div id="loader" class="loading-spin transition-opacity duration-500 ease-in-out fixed ml-56 mt-16 inset-0 flex items-center justify-center <%= theme['paneltheme-color'] %> transition-opacity duration-300 opacity-100 z-50">
          <svg xmlns="http://www.w3.org/2000/svg" width="27" height="27" viewBox="0 0 27 27" fill="currentColor">
             <path d="M18.696,10.5c-0.275-0.479-0.113-1.09,0.365-1.367l4.759-2.751c0.482-0.273,1.095-0.11,1.37,0.368 c0.276,0.479,0.115,1.092-0.364,1.364l-4.764,2.751C19.583,11.141,18.973,10.977,18.696,10.5z"/>
             <path d="M16.133,6.938l2.75-4.765c0.276-0.478,0.889-0.643,1.367-0.366c0.479,0.276,0.641,0.886,0.365,1.366l-2.748,4.762 C17.591,8.415,16.979,8.58,16.5,8.303C16.021,8.027,15.856,7.414,16.133,6.938z"/>

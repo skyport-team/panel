@@ -118,8 +118,6 @@
   "nodesText": "Un elenco di tutti i nodi configurati nel pannello Skyport.",
   "plugins": "Plugin",
   "signOut": "Disconnetti",
-  "accountJSON": "Account - JSON",
-  "nodesJSON": "Nodi - JSON",
   "image": "Immagine",
   "images": "Immagini",
   "imagesText": "Un elenco di tutte le immagini nel pannello Skyport.",

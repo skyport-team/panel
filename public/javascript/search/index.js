@@ -127,3 +127,28 @@ searchInput.addEventListener("keypress", function (event) {
     }
   }
 });
+
+// F1 shortcut to focus search
+document.addEventListener("keydown", function (event) {
+  if (event.key === "F1") {
+    event.preventDefault();
+    searchInput.focus();
+  }
+});
+
+// Show search results on focus
+searchInput.addEventListener("focus", showSearchResults);
+
+// Hide search results when clicking outside
+document.addEventListener("click", function (event) {
+  if (
+    !searchInput.contains(event.target) &&
+    !searchResults.contains(event.target)
+  ) {
+    searchResults.classList.add("hidden");
+  }
+});
+
+function showSearchResults() {
+  searchResults.classList.remove("hidden");
+}
