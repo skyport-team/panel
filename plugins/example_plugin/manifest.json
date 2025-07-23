@@ -1,18 +1,18 @@
 {
-    "name": "Example Plugin",
-    "version": "1.0.0",
-    "description": "The Description of the Example Plugin",
-    "author": "privt00",
-    "main": "index.js",
-    "router": "example",
-    "adminsidebar": {
-        "example url": "/example"
-    },
-    "sidebar": {
-        "Example": {
-            "url": "/example",
-            "search_data": "cloud",
-            "icon": "/public/example.svg"
-        }
+  "name": "Example Plugin",
+  "version": "1.0.0",
+  "description": "The Description of the Example Plugin",
+  "author": "privt00",
+  "main": "index.js",
+  "router": "example",
+  "adminsidebar": {
+    "example url": "/example"
+  },
+  "sidebar": {
+    "Example": {
+      "url": "/example",
+      "search_data": "cloud",
+      "icon": "/public/example.svg"
     }
+  }
 }

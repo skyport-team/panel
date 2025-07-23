@@ -1,13 +1,13 @@
-const nodemailer = require('nodemailer');
-const { db } = require('./db.js');
-const config = require('../config.json');
+const nodemailer = require("nodemailer");
+const { db } = require("./db.js");
+const config = require("../config.json");
 
 async function getSMTPSettings() {
-  const smtpSettings = await db.get('smtp_settings');
-  const name = await db.get('name') || 'Skyport';
+  const smtpSettings = await db.get("smtp_settings");
+  const name = (await db.get("name")) || "Skyport";
 
   if (!smtpSettings) {
-    throw new Error('SMTP settings not found');
+    throw new Error("SMTP settings not found");
   }
 
   return {
@@ -19,7 +19,7 @@ async function getSMTPSettings() {
         user: smtpSettings.username,
         pass: smtpSettings.password,
       },
-      tls: {rejectUnauthorized: false},
+      tls: { rejectUnauthorized: false },
     }),
     name,
     smtpSettings,
@@ -67,7 +67,7 @@ async function sendVerificationEmail(email, token) {
   const mailOptions = {
     from: `${smtpSettings.fromName} <${smtpSettings.fromAddress}>`,
     to: email,
-    subject: 'Verify Your Email Address',
+    subject: "Verify Your Email Address",
     html: `
       <div>
         <h2>Verify Your Email Address</h2>
@@ -87,7 +87,7 @@ async function sendTestEmail(recipientEmail) {
   const mailOptions = {
     from: `${smtpSettings.fromName} <${smtpSettings.fromAddress}>`,
     to: recipientEmail,
-    subject: 'Skyport Test Message',
+    subject: "Skyport Test Message",
     html: `
       <html>
         <body>
@@ -107,7 +107,7 @@ async function sendPasswordResetEmail(email, token) {
   const mailOptions = {
     from: `${smtpSettings.fromName} <${smtpSettings.fromAddress}>`,
     to: email,
-    subject: 'Password Reset Request',
+    subject: "Password Reset Request",
     html: `
       <div>
         <h2>Password Reset Request</h2>

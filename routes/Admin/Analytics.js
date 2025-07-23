@@ -1,11 +1,11 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const { db } = require('../../handlers/db');
-const { isAdmin } = require('../../utils/isAdmin');
+const { db } = require("../../handlers/db");
+const { isAdmin } = require("../../utils/isAdmin");
 
-router.get('/admin/analytics', isAdmin, async (req, res) => {
-  const analytics = await db.get('analytics') || [];
-  
+router.get("/admin/analytics", isAdmin, async (req, res) => {
+  const analytics = (await db.get("analytics")) || [];
+
   const pageViews = analytics.reduce((acc, item) => {
     acc[item.path] = (acc[item.path] || 0) + 1;
     return acc;
@@ -16,12 +16,12 @@ router.get('/admin/analytics', isAdmin, async (req, res) => {
     return acc;
   }, {});
 
-  const timeSeriesData = analytics.map(item => ({
+  const timeSeriesData = analytics.map((item) => ({
     timestamp: item.timestamp,
-    path: item.path
+    path: item.path,
   }));
 
-  res.render('admin/analytics', {
+  res.render("admin/analytics", {
     req,
     user: req.user,
     pageViews,
@@ -30,17 +30,17 @@ router.get('/admin/analytics', isAdmin, async (req, res) => {
   });
 });
 
-router.get('/api/analytics', isAdmin, async (req, res) => {
+router.get("/api/analytics", isAdmin, async (req, res) => {
   // Check if user is authenticated and has admin rights
   if (!req.user || !req.user.admin) {
-    return res.status(403).json({ error: 'Unauthorized' });
+    return res.status(403).json({ error: "Unauthorized" });
   }
 
-  const analytics = await db.get('analytics') || [];
+  const analytics = (await db.get("analytics")) || [];
 
   // Process analytics data
   const totalRequests = analytics.length;
-  const uniqueVisitors = new Set(analytics.map(item => item.ip)).size;
+  const uniqueVisitors = new Set(analytics.map((item) => item.ip)).size;
   const avgRequestsPerHour = totalRequests / 24; // Assuming 24 hours of data
 
   // Get top page
@@ -52,7 +52,7 @@ router.get('/api/analytics', isAdmin, async (req, res) => {
 
   // Traffic over time (hourly)
   const trafficOverTime = Array(24).fill(0);
-  analytics.forEach(item => {
+  analytics.forEach((item) => {
     const hour = new Date(item.timestamp).getHours();
     trafficOverTime[hour]++;
   });
@@ -68,13 +68,13 @@ router.get('/api/analytics', isAdmin, async (req, res) => {
     avgRequestsPerHour,
     topPage,
     trafficOverTime: {
-      labels: Array.from({length: 24}, (_, i) => `${i}:00`),
-      data: trafficOverTime
+      labels: Array.from({ length: 24 }, (_, i) => `${i}:00`),
+      data: trafficOverTime,
     },
     topPages: {
       labels: topPages.map(([page]) => page),
-      data: topPages.map(([, count]) => count)
-    }
+      data: topPages.map(([, count]) => count),
+    },
   });
 });
 

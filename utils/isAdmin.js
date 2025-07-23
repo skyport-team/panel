@@ -10,7 +10,7 @@
  */
 function isAdmin(req, res, next) {
   if (!req.user || req.user.admin !== true) {
-    return res.redirect('../');
+    return res.redirect("../");
   }
   next();
 }

@@ -1,11 +1,11 @@
-const express = require('express');
-const router = require('./router');
+const express = require("express");
+const router = require("./router");
 
 function register(addonManager) {
-    //console.log('loaded!');
+  //console.log('loaded!');
 }
 
 module.exports = {
-    register,
-    router
+  register,
+  router,
 };

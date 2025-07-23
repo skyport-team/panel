@@ -1,11 +1,11 @@
-const express = require('express');
-const axios = require('axios');
-const { db } = require('../../handlers/db.js');
-const { logAudit } = require('../../handlers/auditLog.js');
-const { checkContainerState } = require('../../utils/checkstate.js');
-const { v4: uuid } = require('uuid');
-const { isAdmin } = require('../../utils/isAdmin.js');
-const log = new (require('cat-loggr'))();
+const express = require("express");
+const axios = require("axios");
+const { db } = require("../../handlers/db.js");
+const { logAudit } = require("../../handlers/auditLog.js");
+const { checkContainerState } = require("../../utils/checkstate.js");
+const { v4: uuid } = require("uuid");
+const { isAdmin } = require("../../utils/isAdmin.js");
+const log = new (require("cat-loggr"))();
 
 const router = express.Router();
 
@@ -13,17 +13,37 @@ const router = express.Router();
  * GET /instances/deploy
  * Handles the deployment of a new instance based on the parameters provided via query strings.
  */
-router.get('/instances/deploy', isAdmin, async (req, res) => {
-  const { image, imagename, memory, cpu, ports, nodeId, name, user, primary, variables } = req.query;
-  if (!image || !memory || !cpu || !ports || !nodeId || !name || !user || !primary) {
-    return res.status(400).json({ error: 'Missing parameters' });
+router.get("/instances/deploy", isAdmin, async (req, res) => {
+  const {
+    image,
+    imagename,
+    memory,
+    cpu,
+    ports,
+    nodeId,
+    name,
+    user,
+    primary,
+    variables,
+  } = req.query;
+  if (
+    !image ||
+    !memory ||
+    !cpu ||
+    !ports ||
+    !nodeId ||
+    !name ||
+    !user ||
+    !primary
+  ) {
+    return res.status(400).json({ error: "Missing parameters" });
   }
 
   try {
-    const Id = uuid().split('-')[0];
+    const Id = uuid().split("-")[0];
     const node = await db.get(`${nodeId}_node`);
     if (!node) {
-      return res.status(400).json({ error: 'Invalid node' });
+      return res.status(400).json({ error: "Invalid node" });
     }
 
     const requestData = await prepareRequestData(
@@ -35,7 +55,7 @@ router.get('/instances/deploy', isAdmin, async (req, res) => {
       node,
       Id,
       variables,
-      imagename,
+      imagename
     );
     const response = await axios(requestData);
 
@@ -50,40 +70,53 @@ router.get('/instances/deploy', isAdmin, async (req, res) => {
       primary,
       name,
       Id,
-      imagename,
+      imagename
     );
 
     // Start the state checking process
     checkContainerState(Id, node.address, node.port, node.apiKey, user);
 
-    logAudit(req.user.userId, req.user.username, 'instance:create', req.ip);
+    logAudit(req.user.userId, req.user.username, "instance:create", req.ip);
     res.status(201).json({
-      message: "Container creation initiated. State will be updated asynchronously.",
+      message:
+        "Container creation initiated. State will be updated asynchronously.",
       volumeId: Id,
-      state: 'INSTALLING'
+      state: "INSTALLING",
     });
   } catch (error) {
-    log.error('Error deploying instance:', error);
+    log.error("Error deploying instance:", error);
     res.status(500).json({
-      error: 'Failed to create container',
-      details: error.response ? error.response.data : 'No additional error info',
+      error: "Failed to create container",
+      details: error.response
+        ? error.response.data
+        : "No additional error info",
     });
   }
 });
 
-async function prepareRequestData(image, memory, cpu, ports, name, node, Id, variables, imagename) {
-  const rawImages = await db.get('images');
-  const imageData = rawImages.find(i => i.Name === imagename);
+async function prepareRequestData(
+  image,
+  memory,
+  cpu,
+  ports,
+  name,
+  node,
+  Id,
+  variables,
+  imagename
+) {
+  const rawImages = await db.get("images");
+  const imageData = rawImages.find((i) => i.Name === imagename);
 
   const requestData = {
-    method: 'post',
+    method: "post",
     url: `http://${node.address}:${node.port}/instances/create`,
     auth: {
-      username: 'Skyport',
+      username: "Skyport",
       password: node.apiKey,
     },
     headers: {
-      'Content-Type': 'application/json',
+      "Content-Type": "application/json",
     },
     data: {
       Name: name,
@@ -103,8 +136,8 @@ async function prepareRequestData(image, memory, cpu, ports, name, node, Id, var
   };
 
   if (ports) {
-    ports.split(',').forEach(portMapping => {
-      const [containerPort, hostPort] = portMapping.split(':');
+    ports.split(",").forEach((portMapping) => {
+      const [containerPort, hostPort] = portMapping.split(":");
 
       // Adds support for TCP
       const tcpKey = `${containerPort}/tcp`;
@@ -142,10 +175,10 @@ async function updateDatabaseWithNewInstance(
   primary,
   name,
   Id,
-  imagename,
+  imagename
 ) {
-  const rawImages = await db.get('images');
-  const imageData = rawImages.find(i => i.Name === imagename);
+  const rawImages = await db.get("images");
+  const imageData = rawImages.find((i) => i.Name === imagename);
 
   let altImages = imageData ? imageData.AltImages : [];
 
@@ -154,7 +187,7 @@ async function updateDatabaseWithNewInstance(
     Id,
     Node: node,
     User: userId,
-    InternalState: 'INSTALLING',
+    InternalState: "INSTALLING",
     ContainerId: responseData.containerId,
     VolumeId: Id,
     Memory: parseInt(memory),
@@ -172,9 +205,9 @@ async function updateDatabaseWithNewInstance(
   userInstances.push(instanceData);
   await db.set(`${userId}_instances`, userInstances);
 
-  const globalInstances = (await db.get('instances')) || [];
+  const globalInstances = (await db.get("instances")) || [];
   globalInstances.push(instanceData);
-  await db.set('instances', globalInstances);
+  await db.set("instances", globalInstances);
 
   await db.set(`${Id}_instance`, instanceData);
 }

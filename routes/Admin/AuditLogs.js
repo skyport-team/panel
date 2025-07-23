@@ -1,21 +1,21 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const { db } = require('../../handlers/db.js');
-const { isAdmin } = require('../../utils/isAdmin.js');
-const log = new (require('cat-loggr'))();
+const { db } = require("../../handlers/db.js");
+const { isAdmin } = require("../../utils/isAdmin.js");
+const log = new (require("cat-loggr"))();
 
-router.get('/admin/auditlogs', isAdmin, async (req, res) => {
+router.get("/admin/auditlogs", isAdmin, async (req, res) => {
   try {
-    let audits = await db.get('audits');
+    let audits = await db.get("audits");
     audits = audits ? JSON.parse(audits) : [];
-    res.render('admin/auditlogs', {
+    res.render("admin/auditlogs", {
       req,
       user: req.user,
-      audits
+      audits,
     });
   } catch (err) {
-    log.error('Error fetching audits:', err);
-    res.status(500).send('Internal Server Error');
+    log.error("Error fetching audits:", err);
+    res.status(500).send("Internal Server Error");
   }
 });
 

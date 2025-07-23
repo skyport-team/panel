@@ -1,4 +1,4 @@
-const { db } = require('../handlers/db.js');
+const { db } = require("../handlers/db.js");
 
 // Analytics middleware
 const analyticsMiddleware = async (req, res, next) => {
@@ -6,10 +6,10 @@ const analyticsMiddleware = async (req, res, next) => {
   const path = req.path;
   const method = req.method;
   const ip = req.ip;
-  const userAgent = req.get('User-Agent');
+  const userAgent = req.get("User-Agent");
 
   // Fetch existing analytics data
-  let analytics = await db.get('analytics') || [];
+  let analytics = (await db.get("analytics")) || [];
 
   // Push new data
   analytics.push({
@@ -17,15 +17,15 @@ const analyticsMiddleware = async (req, res, next) => {
     path,
     method,
     ip,
-    userAgent
+    userAgent,
   });
 
   // Clean up old data (older than 24 hours)
   const oneDayAgo = Date.now() - 24 * 60 * 60 * 1000;
-  analytics = analytics.filter(item => item.timestamp >= oneDayAgo);
+  analytics = analytics.filter((item) => item.timestamp >= oneDayAgo);
 
   // Save updated analytics data
-  await db.set('analytics', analytics);
+  await db.set("analytics", analytics);
 
   next();
 };
