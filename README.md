@@ -6,7 +6,8 @@
 
 ## Overview
 
-Skyport is an open source panel for managing and operating game servers and applications built using Node.js with Express and Dockerode. [Click here to join our Discord.](https://skyport.privt.xyz/)
+Skyport is an open source panel for managing and operating game servers and applications built using Node.js with Express and Dockerode. ~~[Click here to join our Discord.](https://skyport.privt.xyz/)~~
+If you want support you can join the discord of Overnode Project [not official server](https://discord.gg/kVtDQrrwcc)
 
 ## Installation
 
