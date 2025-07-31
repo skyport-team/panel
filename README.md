@@ -15,7 +15,7 @@ You can read our documentation at [skyport.overnode.fr](https://skyport.overnode
 
 ## Configuration
 
-Edit the `config.json` file in the root directory to set up the application settings including the database connection and port.
+Rename `example_config.json` to `config.json` and edit file in the root directory to set up the application settings including the database connection and port.
 
 ## Usage
 
