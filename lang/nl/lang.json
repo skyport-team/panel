@@ -45,7 +45,7 @@
   "createNewInstance": "Nieuwe instantie maken",
   "instancesText": "Een lijst van alle instanties die op het Skyport-paneel zijn geïmplementeerd.",
   "noInstances": "Geen instanties",
-  "noInstancesText": "Er zijn geen instanties op uw account.",
+  "noInstancesText": "Geen instantie ingezet.",
   "seeAllInstances": "Alle instanties bekijken",
   "showingYourInstances": "Uw instanties worden weergegeven",
   "settings": "Instellingen",
@@ -188,5 +188,6 @@
   "databaseCannotDelete": "Kan de enige gebruiker in de database niet verwijderen.",
   "userCreateError": "Fout bij het aanmaken van de gebruiker",
   "saveChanges": "Wijzigingen Opslaan",
-  "jsonSelectFile": "Selecteer een JSON-bestand."
+  "jsonSelectFile": "Selecteer een JSON-bestand.",
+  "editImage": "Afbeelding bewerken"
 }

@@ -1,0 +1,13 @@
+{
+  "watch": ["routes/**/*.js", "views/**/*.ejs"],
+  "ext": "js,ejs",
+  "ignore": [
+    "node_modules",
+    "public",
+    "storage",
+    "logs",
+    "exec",
+    "config.json"
+  ],
+  "exec": "npm run start"
+}

@@ -1,17 +1,20 @@
-![[!image](https://i.imgur.com/SU7QypZ.png)](https://i.imgur.com/SU7QypZ.png)
+![Skyport Panel Logo](https://i.imgur.com/SU7QypZ.png)
 
 ![GitHub contributors](https://img.shields.io/github/contributors/skyport-team/panel?style=for-the-badge)
+![GitHub forks](https://img.shields.io/github/forks/skyport-team/panel?style=for-the-badge)
+![GitHub stars](https://img.shields.io/github/stars/skyport-team/panel?style=for-the-badge)
+![GitHub issues](https://img.shields.io/github/issues/skyport-team/panel?style=for-the-badge)
+![GitHub license](https://img.shields.io/github/license/skyport-team/panel?style=for-the-badge)
+![GitHub last commit](https://img.shields.io/github/last-commit/skyport-team/panel?style=for-the-badge)
 
 # Skyport Panel
 
-## Overview
+**Skyport Panel** is an open-source control panel built by the [Skyport Team](https://github.com/skyport-team) for managing game servers and apps using Node.js, Express, and Docker.
 
-Skyport is an open source panel for managing and operating game servers and applications built using Node.js with Express and Dockerode. ~~[Click here to join our Discord.](https://skyport.privt.xyz/)~~
-If you want support you can join the discord of Overnode Project [not official server](https://discord.gg/kVtDQrrwcc)
+It aims to be a simple and efficient solution for hosting and managing instances with a clean web interface and container-based deployment.
 
-## Installation
-
-You can read our documentation at [skyport.overnode.fr](https://skyport.overnode.fr)
+- Documentation: [skyport.overnode.fr](https://skyport.overnode.fr)
+- Community Support (unofficial): [Join our Discord](https://discord.gg/kVtDQrrwcc)
 
 ## Configuration
 
@@ -23,7 +26,8 @@ Navigate to `http://localhost:<port>` to access the Skyport Panel. Log in with y
 
 ## Contributing
 
-Contributions are welcome. Please fork the repository and submit pull requests with your proposed changes.
+Contributions are welcome! Fork the repo and open a pull request.
+Bug reports and feature suggestions are also appreciated.
 
 ## License
 

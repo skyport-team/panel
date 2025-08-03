@@ -45,7 +45,7 @@
   "createNewInstance": "नया इंस्टेंस बनाएं",
   "instancesText": "स्काईपोर्ट पैनल पर सभी इंस्टेंस की एक सूची।",
   "noInstances": "कोई इंस्टेंस नहीं",
-  "noInstancesText": "आपके खाते में कोई इंस्टेंस नहीं है।",
+  "noInstancesText": "कोई इंस्टेंस डिप्लॉय नहीं किया गया है।",
   "seeAllInstances": "सभी इंस्टेंस देखें",
   "showingYourInstances": "आपके इंस्टेंस दिखा रहा है",
   "settings": "सेटिंग्स",

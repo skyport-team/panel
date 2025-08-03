@@ -45,7 +45,7 @@
   "createNewInstance": "Crear nueva instancia",
   "instancesText": "Lista de todas las instancias instaladas en el panel de Skyport.",
   "noInstances": "Sin instancias",
-  "noInstancesText": "No tienes instancias en tu cuenta.",
+  "noInstancesText": "No tienes instancias instaladas.",
   "seeAllInstances": "Ver todas las instancias",
   "showingYourInstances": "Mostrando tus instancias",
   "settings": "Configuración",
@@ -188,5 +188,6 @@
   "databaseCannotDelete": "No se puede eliminar al único usuario en la base de datos.",
   "userCreateError": "Error al crear el usuario",
   "saveChanges": "Guardar cambios",
-  "jsonSelectFile": "Por favor, selecciona un archivo JSON."
+  "jsonSelectFile": "Por favor, selecciona un archivo JSON.",
+  "editImage": "Editar imagen"
 }

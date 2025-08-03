@@ -45,7 +45,7 @@
   "createNewInstance": "Neue Instanz erstellen",
   "instancesText": "Eine Liste aller auf dem Skyport-Panel bereitgestellten Instanzen.",
   "noInstances": "Keine Instanzen",
-  "noInstancesText": "Es gibt keine Instanzen auf Ihrem Konto.",
+  "noInstancesText": "Keine Instanz bereitgestellt.",
   "seeAllInstances": "Alle Instanzen anzeigen",
   "showingYourInstances": "Ihre Instanzen anzeigen",
   "settings": "Einstellungen",
@@ -188,5 +188,6 @@
   "databaseCannotDelete": "Der einzige Benutzer in der Datenbank kann nicht gelöscht werden.",
   "userCreateError": "Fehler beim Erstellen des Benutzers",
   "saveChanges": "Änderungen speichern",
-  "jsonSelectFile": "Bitte wählen Sie eine JSON-Datei aus."
+  "jsonSelectFile": "Bitte wählen Sie eine JSON-Datei aus.",
+  "editImage": "Bild bearbeiten"
 }

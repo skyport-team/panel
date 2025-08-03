@@ -110,7 +110,7 @@ async function prepareRequestData(
 
   const requestData = {
     method: "post",
-    url: `http://${node.address}:${node.port}/instances/redeploy/${containerId}`,
+    url: `http://${node.address}:${node.port}/instances/redeploy/${containerId}/${id}`,
     auth: {
       username: "Skyport",
       password: node.apiKey,
@@ -193,3 +193,5 @@ async function updateDatabaseWithNewInstance(
 }
 
 module.exports = router;
+module.exports.prepareRequestData = prepareRequestData;
+module.exports.updateDatabaseWithNewInstance = updateDatabaseWithNewInstance;

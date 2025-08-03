@@ -45,7 +45,7 @@
   "createNewInstance": "Crea nuova istanza",
   "instancesText": "Un elenco di tutte le istanze distribuite sul pannello Skyport.",
   "noInstances": "Nessuna istanza",
-  "noInstancesText": "Non ci sono istanze nel tuo account.",
+  "noInstancesText": "Nessuna istanza distribuita.",
   "seeAllInstances": "Vedi tutte le istanze",
   "showingYourInstances": "Visualizzazione delle tue istanze",
   "settings": "Impostazioni",
@@ -188,5 +188,6 @@
   "databaseCannotDelete": "L'unico utente nel database non può essere eliminato.",
   "userCreateError": "Errore nella creazione dell'utente",
   "saveChanges": "Salva modifiche",
-  "jsonSelectFile": "Seleziona un file JSON."
+  "jsonSelectFile": "Seleziona un file JSON.",
+  "editImage": "Modifica immagine"
 }

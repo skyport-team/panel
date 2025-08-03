@@ -11,6 +11,10 @@ const {
 const path = require("path");
 
 const { checkContainerState } = require("../../utils/checkstate.js");
+const {
+  prepareRequestData,
+  updateDatabaseWithNewInstance,
+} = require("./InstanceReDeploy.js");
 
 const plugins = loadPlugins(path.join(__dirname, "../../plugins"));
 const router = express.Router();
@@ -214,105 +218,5 @@ router.get("/instances/startup/changeimage/:id", async (req, res) => {
     });
   }
 });
-
-async function prepareRequestData(
-  image,
-  memory,
-  cpu,
-  ports,
-  name,
-  node,
-  id,
-  containerId,
-  Env
-) {
-  const rawImages = await db.get("images");
-  const imageData = rawImages.find((i) => i.Image === image);
-
-  const requestData = {
-    method: "post",
-    url: `http://${node.address}:${node.port}/instances/redeploy/${containerId}/${id}`,
-    auth: {
-      username: "Skyport",
-      password: node.apiKey,
-    },
-    headers: {
-      "Content-Type": "application/json",
-    },
-    data: {
-      Name: name,
-      Id: id,
-      Image: image,
-      Env,
-      Scripts: imageData ? imageData.Scripts : undefined,
-      Memory: memory ? parseInt(memory) : undefined,
-      Cpu: cpu ? parseInt(cpu) : undefined,
-      ExposedPorts: {},
-      PortBindings: {},
-      AltImages: imageData ? imageData.AltImages : [],
-    },
-  };
-
-  if (ports) {
-    ports.split(",").forEach((portMapping) => {
-      const [containerPort, hostPort] = portMapping.split(":");
-      const key = `${containerPort}/tcp`;
-      requestData.data.ExposedPorts[key] = {};
-      requestData.data.PortBindings[key] = [{ HostPort: hostPort }];
-    });
-  }
-  return requestData;
-}
-
-async function updateDatabaseWithNewInstance(
-  responseData,
-  userId,
-  node,
-  image,
-  memory,
-  cpu,
-  ports,
-  primary,
-  name,
-  id,
-  currentimage,
-  imagedata,
-  Env
-) {
-  const rawImages = await db.get("images");
-  const imageData = rawImages.find((i) => i.Image === image);
-  const altImages = imageData ? imageData.AltImages : [];
-
-  const instanceData = {
-    Name: name,
-    Id: id,
-    Node: node,
-    User: userId,
-    InternalState: "INSTALLING",
-    ContainerId: responseData.containerId,
-    VolumeId: id,
-    Memory: parseInt(memory),
-    Cpu: parseInt(cpu),
-    Ports: ports,
-    Primary: primary,
-    currentimage,
-    Env,
-    Image: image,
-    AltImages: altImages,
-    imageData: imagedata,
-  };
-
-  let userInstances = (await db.get(`${userId}_instances`)) || [];
-  userInstances = userInstances.filter((instance) => instance.Id !== id);
-  userInstances.push(instanceData);
-  await db.set(`${userId}_instances`, userInstances);
-
-  let globalInstances = (await db.get("instances")) || [];
-  globalInstances = globalInstances.filter((instance) => instance.Id !== id);
-  globalInstances.push(instanceData);
-  await db.set("instances", globalInstances);
-
-  await db.set(`${id}_instance`, instanceData);
-}
 
 module.exports = router;

@@ -45,7 +45,7 @@
   "createNewInstance": "Créer une nouvelle instance",
   "instancesText": "Une liste de toutes les instances déployées sur le panneau Skyport.",
   "noInstances": "Aucune instance",
-  "noInstancesText": "Aucune instance sur votre compte.",
+  "noInstancesText": "Aucune instance déployée.",
   "seeAllInstances": "Voir toutes les instances",
   "showingYourInstances": "Voir vos instances",
   "settings": "Paramètres",
@@ -188,5 +188,6 @@
   "databaseCannotDelete": "Impossible de supprimer le seul utilisateur de la base de données.",
   "userCreateError": "Erreur lors de la création de l'utilisateur",
   "saveChanges": "Enregistrer les modifications",
-  "jsonSelectFile": "Veuillez sélectionner un fichier JSON."
+  "jsonSelectFile": "Veuillez sélectionner un fichier JSON.",
+  "editImage": "Modifier l'image"
 }
