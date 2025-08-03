@@ -188,5 +188,6 @@
   "databaseCannotDelete": "डेटाबेस में एकमात्र उपयोगकर्ता को हटाया नहीं जा सकता।",
   "userCreateError": "उपयोगकर्ता बनाते समय त्रुटि",
   "saveChanges": "परिवर्तन सहेजें",
-  "jsonSelectFile": "कृपया एक JSON फ़ाइल चुनें।"
+  "jsonSelectFile": "कृपया एक JSON फ़ाइल चुनें।",
+  "noApiKeysCreated": "अभी तक कोई API कुंजी नहीं बनाई गई है."
 }

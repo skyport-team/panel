@@ -189,5 +189,6 @@
   "userCreateError": "Errore nella creazione dell'utente",
   "saveChanges": "Salva modifiche",
   "jsonSelectFile": "Seleziona un file JSON.",
-  "editImage": "Modifica immagine"
+  "editImage": "Modifica immagine",
+  "noApiKeysCreated": "Non sono state ancora create chiavi API."
 }

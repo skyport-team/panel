@@ -189,5 +189,6 @@
   "userCreateError": "Fout bij het aanmaken van de gebruiker",
   "saveChanges": "Wijzigingen Opslaan",
   "jsonSelectFile": "Selecteer een JSON-bestand.",
-  "editImage": "Afbeelding bewerken"
+  "editImage": "Afbeelding bewerken",
+  "noApiKeysCreated": "Er zijn nog geen API-sleutels aangemaakt."
 }
