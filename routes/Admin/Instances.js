@@ -58,9 +58,20 @@ const workflowsFilePath = path.join(__dirname, "../../storage/workflows.json");
 
 async function deleteInstance(instance) {
   try {
-    await axios.get(
-      `http://Skyport:${instance.Node.apiKey}@${instance.Node.address}:${instance.Node.port}/instances/${instance.ContainerId}/delete`
-    );
+    const requestData = {
+      method: "delete",
+      url: `http://${instance.Node.address}:${instance.Node.port}/instances/${instance.ContainerId}`,
+      auth: {
+        username: "Skyport",
+        password: instance.Node.apiKey,
+      },
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+
+    await axios(requestData);
+
     let userInstances = (await db.get(instance.User + "_instances")) || [];
     userInstances = userInstances.filter((obj) => obj.Id !== instance.Id);
     await db.set(instance.User + "_instances", userInstances);
