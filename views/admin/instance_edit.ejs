@@ -1,6 +1,6 @@
 <%- include('../components/template') %>
 <main id="content">
-    <div id="nodeForm" class="mt-6 px-8 w-full grid grid-cols-2 gap-4">
+    <div class="mt-6 px-8 w-full grid grid-cols-2 gap-4">
         <div class="p-3 bg-transparent shadow-xl border border-white/5 rounded-xl overflow-hidden sm:p-6 lg:p-10 card" style="width: 800px;">
             <form>
                 <div class="grid grid-cols-2 gap-4">
@@ -50,7 +50,7 @@
                 </div>
     
                 <div class="mt-4">
-                    <button id="createNodeBtn" type="button" class="block rounded-xl <%= theme['button-color'] %> px-3 py-2 text-center text-sm font-medium shadow-lg transition focus:outline focus:outline-2 focus:outline-offset-2">Save</button>
+                    <button id="editInstanceBtn" type="button" class="block rounded-xl <%= theme['button-color'] %> px-3 py-2 text-center text-sm font-medium shadow-lg transition focus:outline focus:outline-2 focus:outline-offset-2">Save</button>
                 </div>
             </form>
         </div>
@@ -59,10 +59,10 @@
 
 </main>
 <script>
-    document.getElementById('createNodeBtn').addEventListener('click', function() {
-        const createBtn = this;
-        createBtn.textContent = 'Working on it...';
-        createBtn.disabled = true;
+    document.getElementById('editInstanceBtn').addEventListener('click', function() {
+        const editBtn = this;
+        editBtn.textContent = 'Working on it...';
+        editBtn.disabled = true;
     
         const name = document.getElementById('name');
         const memory = document.getElementById('memory');
@@ -107,12 +107,12 @@
         }
     
         if (!isValid) {
-            createBtn.textContent = 'Create';
-            createBtn.disabled = false;
+            editBtn.textContent = 'Edit';
+            editBtn.disabled = false;
             return;
         }
     
-        const nodeData = {
+        const instanceData = {
             name: name.value,
             image: imageDropdown.value,
             nodeId: '<%= instance.Node.id %>',
@@ -125,7 +125,7 @@
             configFileContent: configFileContent
         };
     
-        sendData(nodeData, createBtn);
+        sendData(instanceData, editBtn);
     });
     
     function clearValidationErrors() {
@@ -159,9 +159,9 @@
         return Number.isInteger(num) && num > 0;
     }
     
-    function sendData(nodeData, createBtn) {
+    function sendData(instanceData, editBtn) {
         const baseUrl = '/instances/redeploy/<%= instance.Id %>';
-        const queryParams = serializeParams(nodeData);
+        const queryParams = serializeParams(instanceData);
         const fullUrl = `${baseUrl}?${queryParams}`;
     
         fetch(fullUrl, {
@@ -179,30 +179,16 @@
         })
         .then(data => {
         window.location.href = '../../../admin/instances?err=EDITED'
-            console.log('Instance created:', data);
-            createBtn.textContent = 'Create';
-            createBtn.disabled = false;
+            console.log('Instance edited:', data);
+            editBtn.textContent = 'Create';
+            editBtn.disabled = false;
         })
         .catch(error => {
             console.error('Error Editing instance:', error);
             alert('Error! Instance editing failed. Check the console for more details.');
-            createBtn.textContent = 'Create';
-            createBtn.disabled = false;
+            editBtn.textContent = 'Create';
+            editBtn.disabled = false;
         });
-    }
-    
-    function handleResponse(response) {
-        if (response.ok) {
-            return response.json();
-        }
-        throw new Error('Failed to create instance');
-    }
-    
-    function handleError(error) {
-        console.error('Error Editing instance:', error);
-        alert('Error! Check the console for more details.');
-        createBtn.textContent = 'Create';
-        createBtn.disabled = false;
     }
     </script>
 
