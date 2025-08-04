@@ -13,7 +13,7 @@
 
 It aims to be a simple and efficient solution for hosting and managing instances with a clean web interface and container-based deployment.
 
-- Documentation: [skyport.overnode.fr](https://skyport.overnode.fr)
+- Documentation: [skyport.dev](https://skyport.dev)
 - Community Support (unofficial): [Join our Discord](https://discord.gg/kVtDQrrwcc)
 
 ## Configuration
