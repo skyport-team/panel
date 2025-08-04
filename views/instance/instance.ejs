@@ -27,7 +27,7 @@
     }
 </style>
 <main class="overflow-hidden" id="content">
-    <% if (Array.isArray(files) && files.length > 0 && !files.some(file => file.name === 'eula.txt')) { %>
+    <% if (!readEula) { %>
         <% if (instance.imageData.features && instance.imageData.features.includes('eula')) { %>
             <div class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur z-50">
                 <div class="bg-white/5 backdrop-blur py-8 px-8 rounded-2xl shadow-lg w-1/2 h-48">

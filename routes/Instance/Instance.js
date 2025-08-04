@@ -7,7 +7,7 @@ const {
 } = require("../../utils/authHelper");
 const { loadPlugins } = require("../../plugins/loadPls.js");
 const path = require("path");
-const { fetchFiles } = require("../../utils/fileHelper");
+const { fetchFiles, fetchFileContent } = require("../../utils/fileHelper");
 const { isAuthenticated } = require("../../handlers/auth.js");
 
 const plugins = loadPlugins(path.join(__dirname, "../../plugins"));
@@ -73,6 +73,14 @@ router.get("/instance/:id", async (req, res) => {
   const { port, domain } = config;
 
   const allPluginData = Object.values(plugins).map((plugin) => plugin.config);
+  const files = await fetchFiles(instance, "");
+
+  let readEula = false;
+  const eulaFile = files.find((file) => file.name === "eula.txt");
+  if (eulaFile) {
+    const eulaContent = await fetchFileContent(instance, "eula.txt");
+    readEula = eulaContent.includes("eula=true");
+  }
 
   res.render("instance/instance", {
     req,
@@ -81,7 +89,8 @@ router.get("/instance/:id", async (req, res) => {
     instance,
     port,
     domain,
-    files: await fetchFiles(instance, ""),
+    files,
+    readEula,
 
     addons: {
       plugins: allPluginData,
