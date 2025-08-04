@@ -43,6 +43,13 @@
                 </tr>
             </thead>
             <tbody>
+                <% if (databases.length === 0) { %>
+                    <tr>
+                        <td colspan="4" class="px-6 py-4 text-center text-neutral-400">
+                            No databases have been created for this instance yet.
+                        </td>
+                    </tr>
+                <% } %>
                 <% databases.forEach(function(database) { %>
                     <tr class="bg-transparent rounded-xl hover:bg-neutral-700/5 cursor-pointer transition border-none">
                         <td class="px-6 py-4 whitespace-nowrap font-mono text-sm font-medium text-white border-none">

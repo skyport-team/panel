@@ -37,6 +37,13 @@
                 </tr>
             </thead>
             <tbody>
+                <% if (users.length === 0) { %>
+                    <tr>
+                        <td colspan="2" class="px-6 py-4 text-center text-neutral-400">
+                            No users have been added to this instance yet.
+                        </td>
+                    </tr>
+                <% } %>
                 <% users.forEach(function(user) { %>
                     <tr class="bg-transparent rounded-xl hover:bg-neutral-700/5 cursor-pointer transition border-none">
                         <td class="px-6 py-4 whitespace-nowrap font-mono text-sm font-medium text-white border-none">
