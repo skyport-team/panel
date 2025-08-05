@@ -128,10 +128,10 @@
                 </a>
               </td>
               <td class="px-6 py-4 whitespace-nowrap text-sm text-neutral-300 border-none">
-                N/A
+                <%= directory.size %>
               </td>
               <td class="px-6 py-4 whitespace-nowrap text-sm text-neutral-300 border-none">
-                N/A
+                <%= formatLastUpdated(directory.lastUpdated) %>
               </td>
               <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium border-none relative">
                 <button onclick="toggleDropdown(event, '<%= directory.name %>')" class="text-neutral-400 hover:text-white transition">
