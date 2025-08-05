@@ -12,7 +12,7 @@
 
     <% let query = req.query.path ? '?path=' + req.query.path : ''; %>
     <div class="flex">
-        <h1 class="text-neutral-200 text-md px-8"><a class="text-neutral-400 hover:text-neutral-300 transition" href="../">/app/data/<%= req.query.path %></a>
+        <h1 class="text-neutral-200 text-md px-8"><a class="text-neutral-400 hover:text-neutral-300 transition" href="../">/app/data/<%= req.query.path ? req.query.path.replace(/^\/+/, '') : '' %></a>
             <input
             id="folder"
             type="text"
@@ -39,8 +39,10 @@ function saveFile() {
     button.textContent = 'Working on it...';
     var instanceId = <%- JSON.stringify(req.params.id) %>;
     const folder = document.getElementById('folder').value;
+    const path = '<%= req.query.path %>'.replace(/^\/+/, '');
+    const query = path ? `?path=${path}` : '';
 
-    fetch(`/instance/${instanceId}/files/folder/create/${folder}<%= query %>`, {
+    fetch(`/instance/${instanceId}/files/folder/create/${folder}${query}`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',

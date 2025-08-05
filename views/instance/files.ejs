@@ -113,7 +113,7 @@
           <% files.filter(file => file.isDirectory).forEach(function(directory) { %>
             <% let currentPath = req.query.path ? req.query.path + '/' : ''; %>
             <% let extension = req.query.path ? '?path=' + req.query.path : ''; %>
-            <tr class="bg-transparent rounded-xl hover:bg-neutral-700/5 cursor-pointer transition border-none">
+            <tr class="bg-transparent rounded-xl hover:bg-neutral-700/5 cursor-pointer transition border-none" oncontextmenu="showContextMenu(event, '<%= directory.name %>', '<%= extension %>'); return false;">
               <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-white border-none">
                 <input type="checkbox" class="form-checkbox h-5 w-5 text-neutral-500 bg-white/5 border border-white/10 rounded focus:ring-offset-neutral-800 focus:ring-neutral-700 transition focus:border-none file-checkbox" data-filename="<%= directory.name %>">
               </td>
@@ -151,7 +151,7 @@
       
           <% files.filter(file => !file.isDirectory).forEach(function(file) { %>
             <% let extension = req.query.path ? '?path=' + req.query.path : ''; %>
-            <tr class="bg-transparent rounded-xl hover:bg-neutral-700/5 cursor-pointer transition border-none">
+            <tr class="bg-transparent rounded-xl hover:bg-neutral-700/5 cursor-pointer transition border-none" oncontextmenu="showContextMenu(event, '<%= file.name %>', '<%= extension %>'); return false;">
               <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-white border-none">
                 <input type="checkbox" class="form-checkbox h-5 w-5 text-neutral-500 bg-white/5 border border-white/10 rounded focus:ring-offset-neutral-800 focus:ring-neutral-700 transition focus:border-none file-checkbox" data-filename="<%= file.name %>">
               </td>
@@ -516,6 +516,48 @@ window.addEventListener('beforeunload', () => {
 // Initial update to set the correct state
 updateSelectedFiles();
             
+   </script>
+
+   <!-- Context Menu -->
+   <div id="contextMenu" class="fixed hidden bg-white rounded-xl shadow-lg w-48 z-50">
+     <div class="p-2" role="menu" aria-orientation="vertical">
+       <a href="#" onclick="handleContextMenuAction('rename')" class="transition rounded-xl block px-4 py-2 text-sm text-neutral-700 hover:bg-neutral-100 hover:text-neutral-900 text-left" role="menuitem">Rename</a>
+       <a href="#" onclick="handleContextMenuAction('delete')" class="transition rounded-xl block px-4 py-2 text-sm text-red-600 hover:bg-red-50 text-left" role="menuitem">Delete</a>
+     </div>
+   </div>
+
+   <script>
+      let contextMenuTarget = { fileName: '', extension: '' };
+
+      function showContextMenu(event, fileName, extension) {
+        event.preventDefault();
+        const contextMenu = document.getElementById('contextMenu');
+        contextMenuTarget.fileName = fileName;
+        contextMenuTarget.extension = extension;
+
+        // Position the menu at cursor
+        contextMenu.style.left = event.pageX + 'px';
+        contextMenu.style.top = event.pageY + 'px';
+        contextMenu.classList.remove('hidden');
+
+        // Close menu when clicking outside
+        document.addEventListener('click', hideContextMenu);
+      }
+
+      function hideContextMenu() {
+        const contextMenu = document.getElementById('contextMenu');
+        contextMenu.classList.add('hidden');
+        document.removeEventListener('click', hideContextMenu);
+      }
+
+      function handleContextMenuAction(action) {
+        if (action === 'rename') {
+          openRenameModal(contextMenuTarget.fileName, contextMenuTarget.extension);
+        } else if (action === 'delete') {
+          openDeleteModal(contextMenuTarget.fileName, contextMenuTarget.extension);
+        }
+        hideContextMenu();
+      }
    </script>
    <script>
       const protocol = window.location.protocol === 'https:' ? 'wss' : 'ws';

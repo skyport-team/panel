@@ -87,7 +87,9 @@ router.post(
       return res.status(500).send("Invalid instance node configuration");
     }
 
-    const query = req.query.path ? `?path=${req.query.path}` : "";
+    // Remove leading slash from path if it exists
+    const cleanPath = req.query.path ? req.query.path.replace(/^\/+/, '') : "";
+    const query = cleanPath ? `?path=${cleanPath}` : "";
     const apiUrl = `http://${instance.Node.address}:${instance.Node.port}/fs/${instance.VolumeId}/folders/create/${foldername}${query}`;
 
     try {
