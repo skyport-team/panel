@@ -33,10 +33,15 @@ router.post("/instance/:id/imagefeatures/eula", async (req, res) => {
     return res.render("instance/suspended", { req, user: req.user });
   }
 
-  createFile(instance, "eula.txt", "eula=true");
-  editFile(instance, "eula.txt", "eula=true");
+  try {
+    await createFile(instance, "eula.txt", "eula=true");
+    await editFile(instance, "eula.txt", "eula=true");
+  } catch (error) {
+    log.error(`Failed to update eula.txt for instance ${id}:`, error);
+    return res.status(500).send("Error updating EULA file");
+  }
 
-  res.status(200).send("OK");
+  res.status(200);
 });
 
 module.exports = router;
