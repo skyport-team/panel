@@ -59,6 +59,7 @@
         </tbody>
       </table>
       </div>
+      <%- include('../components/pagination', { pagination }) %>
       <div style="display: none;" id="imageDetail" class="mt-6 pl-8 w-full text-white">
         <button id="backButton" class="block rounded-xl bg-neutral-800 px-3 py-2 text-center text-sm font-medium text-white shadow-lg hover:bg-neutral-600 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
           <%= req.translations.back %>

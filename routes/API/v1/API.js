@@ -5,6 +5,9 @@ const bcrypt = require("bcrypt");
 const axios = require("axios");
 const { sendPasswordResetEmail } = require("../../../handlers/email.js");
 const { db } = require("../../../handlers/db.js");
+const { checkNodeStatus, checkMultipleNodesStatus, invalidateNodeCache } = require("../../../utils/nodeHelper.js");
+const { batchGet, paginate, invalidateCache } = require("../../../utils/dbHelper.js");
+const cache = require("../../../utils/cache.js");
 const log = new (require("cat-loggr"))();
 
 const saltRounds = 10;
@@ -35,7 +38,16 @@ async function validateApiKey(req, res, next) {
   }
 
   try {
-    const apiKeys = (await db.get("apiKeys")) || [];
+    // Check cache first
+    const cacheKey = "apiKeys_list";
+    let apiKeys = cache.get(cacheKey);
+
+    if (!apiKeys) {
+      apiKeys = (await db.get("apiKeys")) || [];
+      // Cache API keys for 5 minutes
+      cache.set(cacheKey, apiKeys, 5 * 60 * 1000);
+    }
+
     const validKey = apiKeys.find((key) => key.key === apiKey);
 
     if (!validKey) {
@@ -676,45 +688,6 @@ async function deleteInstance(instance) {
   }
 }
 
-/**
- * Checks the operational status of a node by making an HTTP request to its API.
- * Updates the node's status based on the response or sets it as 'Offline' if the request fails.
- * This status check and update are persisted in the database.
- *
- * @param {Object} node - The node object containing details such as address, port, and API key.
- * @returns {Promise<Object>} Returns the updated node object after attempting to verify its status.
- */
-async function checkNodeStatus(node) {
-  try {
-    const RequestData = {
-      method: "get",
-      url: "http://" + node.address + ":" + node.port + "/",
-      auth: {
-        username: "Skyport",
-        password: node.apiKey,
-      },
-      headers: {
-        "Content-Type": "application/json",
-      },
-    };
-    const response = await axios(RequestData);
-    const { versionFamily, versionRelease, online, remote, docker } =
-      response.data;
-
-    node.status = "Online";
-    node.versionFamily = versionFamily;
-    node.versionRelease = versionRelease;
-    node.remote = remote;
-    node.docker = docker;
-
-    await db.set(node.id + "_node", node); // Update node info with new details
-    return node;
-  } catch (error) {
-    node.status = "Offline";
-    await db.set(node.id + "_node", node); // Update node as offline if there's an error
-    return node;
-  }
-}
 
 /**
  * Checks the state of a container and updates the database accordingly.

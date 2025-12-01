@@ -1,0 +1,42 @@
+<%
+  // Build query string with filters if they exist
+  function buildPageUrl(pageNum) {
+    const params = new URLSearchParams();
+    params.set('page', pageNum);
+    if (filters && filters.action) params.set('action', filters.action);
+    if (filters && filters.dateRange) params.set('dateRange', filters.dateRange);
+    return '?' + params.toString();
+  }
+%>
+
+<% if (pagination && pagination.totalPages > 1) { %>
+<div class="mt-8 flex items-center justify-center gap-4 border-t border-white/5 px-4 py-4 sm:px-6">
+  <!-- Previous/Next buttons -->
+  <% if (pagination.hasPreviousPage) { %>
+    <a href="<%= buildPageUrl(pagination.currentPage - 1) %>" class="relative inline-flex items-center rounded-md border border-white/10 bg-white/5 px-4 py-2 text-sm font-medium text-white hover:bg-white/10">
+      ← Previous
+    </a>
+  <% } else { %>
+    <span class="relative inline-flex items-center rounded-md border border-white/10 bg-white/5 px-4 py-2 text-sm font-medium text-neutral-500 cursor-not-allowed">
+      ← Previous
+    </span>
+  <% } %>
+
+  <!-- Page info -->
+  <div class="text-center">
+    <p class="text-sm text-neutral-400">
+      Page <span class="font-medium"><%= pagination.currentPage %></span> / <span class="font-medium"><%= pagination.totalPages %></span>
+    </p>
+  </div>
+
+  <% if (pagination.hasNextPage) { %>
+    <a href="<%= buildPageUrl(pagination.currentPage + 1) %>" class="relative inline-flex items-center rounded-md border border-white/10 bg-white/5 px-4 py-2 text-sm font-medium text-white hover:bg-white/10">
+      Next →
+    </a>
+  <% } else { %>
+    <span class="relative inline-flex items-center rounded-md border border-white/10 bg-white/5 px-4 py-2 text-sm font-medium text-neutral-500 cursor-not-allowed">
+      Next →
+    </span>
+  <% } %>
+</div>
+<% } %>

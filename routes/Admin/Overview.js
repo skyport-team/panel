@@ -3,17 +3,21 @@ const router = express.Router();
 const { db } = require("../../handlers/db.js");
 const config = require("../../config.json");
 const { isAdmin } = require("../../utils/isAdmin.js");
+const { batchGet } = require("../../utils/dbHelper.js");
 
 router.get("/admin/overview", isAdmin, async (req, res) => {
   try {
-    const users = (await db.get("users")) || [];
-    const nodes = (await db.get("nodes")) || [];
-    const images = (await db.get("images")) || [];
-    const instances = (await db.get("instances")) || [];
+    // Use batch operations to fetch all required data in parallel
+    const [users, nodesIds, images, instances] = await Promise.all([
+      db.get("users").then(data => data || []),
+      db.get("nodes").then(data => data || []),
+      db.get("images").then(data => data || []),
+      db.get("instances").then(data => data || [])
+    ]);
 
     // Calculate the total number of each type of object
     const usersTotal = users.length;
-    const nodesTotal = nodes.length;
+    const nodesTotal = nodesIds.length;
     const imagesTotal = images.length;
     const instancesTotal = instances.length;
 

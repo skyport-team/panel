@@ -5,6 +5,8 @@ const bcrypt = require("bcrypt");
 const { db } = require("../../handlers/db.js");
 const { logAudit } = require("../../handlers/auditLog.js");
 const { isAdmin } = require("../../utils/isAdmin.js");
+const { getPaginatedUsers, invalidateCache } = require("../../utils/dbHelper.js");
+const cache = require("../../utils/cache.js");
 
 const saltRounds = 10;
 
@@ -19,10 +21,17 @@ async function doesEmailExist(email) {
 }
 
 router.get("/admin/users", isAdmin, async (req, res) => {
+  const page = req.query.page ? parseInt(req.query.page) : 1;
+  const pageSize = req.query.pageSize ? parseInt(req.query.pageSize) : 20;
+
+  // Use pagination for users
+  const usersResult = await getPaginatedUsers(page, pageSize);
+
   res.render("admin/users", {
     req,
     user: req.user,
-    users: (await db.get("users")) || [],
+    users: usersResult.data,
+    pagination: usersResult.pagination,
   });
 });
 
@@ -64,6 +73,9 @@ router.post("/users/create", isAdmin, async (req, res) => {
   users.push(newUser);
   await db.set("users", users);
 
+  // Invalidate users cache after creation
+  invalidateCache("users");
+  cache.delete("apiKeys_list"); // Also invalidate API keys cache
   logAudit(req.user.userId, req.user.username, "user:create", req.ip);
 
   res.status(201).send(newUser);

@@ -4,55 +4,11 @@ const axios = require("axios");
 const { db } = require("../../handlers/db.js");
 const { logAudit } = require("../../handlers/auditLog.js");
 const { isAdmin } = require("../../utils/isAdmin.js");
+const { checkMultipleNodesStatus, invalidateNodeCache } = require("../../utils/nodeHelper.js");
+const { getPaginatedInstances, invalidateCache, invalidateCacheGroup } = require("../../utils/dbHelper.js");
 const fs = require("fs");
 const path = require("path");
 const log = new (require("cat-loggr"))();
-
-// we forgot checkNodeStatus
-async function checkNodeStatus(node) {
-  try {
-    const requestData = {
-      method: "get",
-      url: `http://${node.address}:${node.port}/`,
-      auth: {
-        username: "Skyport",
-        password: node.apiKey,
-      },
-      headers: {
-        "Content-Type": "application/json",
-      },
-    };
-
-    const response = await axios(requestData);
-    if (
-      response.data &&
-      response.data.versionFamily &&
-      response.data.versionRelease
-    ) {
-      const { versionFamily, versionRelease, online, remote, docker } =
-        response.data;
-
-      node.status = online ? "Online" : "Offline";
-      node.versionFamily = versionFamily;
-      node.versionRelease = versionRelease;
-      node.remote = remote;
-      if (docker) {
-        node.docker = docker;
-      }
-
-      await db.set(`${node.id}_node`, node);
-      return node;
-    } else {
-      throw new Error("Invalid response structure");
-    }
-  } catch (error) {
-    log.error(`Error checking status for node ${node.id}: ${error.message}`);
-
-    node.status = "Offline";
-    await db.set(`${node.id}_node`, node);
-    return node;
-  }
-}
 
 const workflowsFilePath = path.join(__dirname, "../../storage/workflows.json");
 
@@ -84,6 +40,10 @@ async function deleteInstance(instance) {
 
     await db.delete(instance.Id + "_workflow");
     await deleteWorkflowFromFile(instance.Id);
+
+    // Invalidate cache after deletion
+    invalidateCache("instances");
+    invalidateCache(instance.User + "_instances");
   } catch (error) {
     log.error(`Error deleting instance ${instance.Id}:`, error);
     throw error;
@@ -113,19 +73,24 @@ function deleteWorkflowFromFile(instanceId) {
 }
 
 router.get("/admin/instances", isAdmin, async (req, res) => {
-  let instances = (await db.get("instances")) || [];
+  const page = req.query.page ? parseInt(req.query.page) : 1;
+  const pageSize = req.query.pageSize ? parseInt(req.query.pageSize) : 20;
+
+  // Use pagination for instances
+  const instancesResult = await getPaginatedInstances(page, pageSize);
+  
   let images = (await db.get("images")) || [];
   let nodes = (await db.get("nodes")) || [];
   let users = (await db.get("users")) || [];
 
-  nodes = await Promise.all(
-    nodes.map((id) => db.get(id + "_node").then(checkNodeStatus))
-  );
+  // Use optimized batch operation for node status checks
+  nodes = await checkMultipleNodesStatus(nodes);
 
   res.render("admin/instances", {
     req,
     user: req.user,
-    instances,
+    instances: instancesResult.data,
+    pagination: instancesResult.pagination,
     images,
     nodes,
     users,
@@ -211,6 +176,10 @@ router.post("/admin/instances/suspend/:id", isAdmin, async (req, res) => {
 
     await db.set("instances", instances);
 
+    // Invalidate cache after update
+    invalidateCache("instances");
+    invalidateCache(id + "_instance");
+
     logAudit(req.user.userId, req.user.username, "instance:suspend", req.ip);
     res.redirect("/admin/instances");
   } catch (error) {
@@ -248,6 +217,10 @@ router.post("/admin/instances/unsuspend/:id", isAdmin, async (req, res) => {
     }
 
     await db.set("instances", instances);
+
+    // Invalidate cache after update
+    invalidateCache("instances");
+    invalidateCache(id + "_instance");
 
     logAudit(req.user.userId, req.user.username, "instance:unsuspend", req.ip);
 

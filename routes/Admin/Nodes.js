@@ -5,70 +5,54 @@ const axios = require("axios");
 const { db } = require("../../handlers/db.js");
 const { logAudit } = require("../../handlers/auditLog.js");
 const { isAdmin } = require("../../utils/isAdmin.js");
+const { checkNodeStatus, checkMultipleNodesStatus, invalidateNodeCache } = require("../../utils/nodeHelper.js");
+const { getPaginatedNodes, invalidateCache } = require("../../utils/dbHelper.js");
 const log = new (require("cat-loggr"))();
 
-async function checkNodeStatus(node) {
-  try {
-    const RequestData = {
-      method: "get",
-      url: "http://" + node.address + ":" + node.port + "/",
-      auth: {
-        username: "Skyport",
-        password: node.apiKey,
-      },
-      headers: {
-        "Content-Type": "application/json",
-      },
-    };
-    const response = await axios(RequestData);
-    const { versionFamily, versionRelease, online, remote, docker } =
-      response.data;
-
-    node.status = "Online";
-    node.versionFamily = versionFamily;
-    node.versionRelease = versionRelease;
-    node.remote = remote;
-
-    await db.set(node.id + "_node", node);
-    return node;
-  } catch (error) {
-    node.status = "Offline";
-    await db.set(node.id + "_node", node);
-    return node;
-  }
-}
-
 router.get("/admin/nodes", isAdmin, async (req, res) => {
-  let nodes = (await db.get("nodes")) || [];
+  const page = req.query.page ? parseInt(req.query.page) : 1;
+  const pageSize = req.query.pageSize ? parseInt(req.query.pageSize) : 20;
+
+  // Use pagination for nodes
+  const nodesResult = await getPaginatedNodes(page, pageSize);
+  let nodeIds = nodesResult.data;
+  
   let instances = (await db.get("instances")) || [];
   let set = {};
-  nodes.forEach(function (node) {
-    set[node] = 0;
+  
+  // Optimized: Count instances per node
+  nodeIds.forEach(function (nodeId) {
+    set[nodeId] = 0;
     instances.forEach(function (instance) {
-      if (instance.Node.id == node) {
-        set[node]++;
+      if (instance.Node.id == nodeId) {
+        set[nodeId]++;
       }
     });
   });
-  nodes = await Promise.all(
-    nodes.map((id) => db.get(id + "_node").then(checkNodeStatus))
-  );
+
+  // Use optimized batch operation for node status checks
+  let nodes = await checkMultipleNodesStatus(nodeIds);
 
   res.render("admin/nodes", {
     req,
     user: req.user,
     nodes,
     set,
+    pagination: nodesResult.pagination,
   });
 });
 
 router.get("/admin/node/:id/stats", isAdmin, async (req, res) => {
   const { id } = req.params;
 
-  let node = await db.get(id + "_node").then(checkNodeStatus);
+  // Get cached node status or fetch fresh if needed
+  let node = await db.get(id + "_node");
   if (!node) {
     return res.status(404).send("Node not found");
   }
+  
+  // Check node status (with cache)
+  node = await checkNodeStatus(node);
 
   let instances = (await db.get("instances")) || [];
   let instanceCount = 0;
@@ -83,7 +67,8 @@ router.get("/admin/node/:id/stats", isAdmin, async (req, res) => {
 
   try {
     const response = await axios.get(
-      `http://Skyport:${node.apiKey}@${node.address}:${node.port}/stats`
+      `http://Skyport:${node.apiKey}@${node.address}:${node.port}/stats`,
+      { timeout: 5000 }
     );
     stats = response.data;
 
@@ -138,6 +123,9 @@ router.post("/nodes/create", isAdmin, async (req, res) => {
   const nodes = (await db.get("nodes")) || [];
   nodes.push(node.id);
   await db.set("nodes", nodes);
+
+  // Invalidate cache after creation
+  invalidateCache("nodes");
 
   logAudit(req.user.userId, req.user.username, "node:create", req.ip);
   res.status(201).json({
@@ -226,6 +214,10 @@ router.post("/nodes/delete", isAdmin, async (req, res) => {
     nodes.splice(nodes.indexOf(node.id), 1);
     await db.set("nodes", nodes);
 
+    // Invalidate cache after deletion
+    invalidateNodeCache(node.id);
+    invalidateCache("nodes");
+
     logAudit(req.user.userId, req.user.username, "node:delete", req.ip);
     res.status(200).json({ success: true });
   } catch (error) {
@@ -268,6 +260,9 @@ router.post("/nodes/configure", async (req, res) => {
     foundNode.configureKey = null; // Remove the configureKey after successful configuration
 
     await db.set(foundNode.id + "_node", foundNode);
+
+    // Invalidate cache after configuration
+    invalidateNodeCache(foundNode.id);
 
     res.status(200).json({ message: "Node configured successfully" });
   } catch (error) {

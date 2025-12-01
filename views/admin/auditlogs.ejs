@@ -12,20 +12,19 @@
             <div class="flex items-center gap-2">
               <label for="actionFilter" class="text-sm text-white">Filter by Action:</label>
               <select id="actionFilter" class="bg-neutral-600/20 border border-white/5 text-white rounded-xl px-3 py-1.5">
-                <option value="" class="text-neutral-800">All Actions</option>
-                <% const actions = [...new Set(audits.map(audit => audit.action))]; %>
+                <option value="" class="text-neutral-800" <%= !filters.actionFilter ? 'selected' : '' %>>All Actions</option>
                 <% actions.forEach(action => { %>
-                  <option value="<%= action %>" class="text-neutral-800"><%= action %></option>
+                  <option value="<%= action %>" class="text-neutral-800" <%= filters.actionFilter === action ? 'selected' : '' %>><%= action %></option>
                 <% }); %>
               </select>
             </div>
             <div class="flex items-center gap-2">
               <label for="dateRange" class="text-sm text-white">Date Range:</label>
               <select id="dateRange" class="bg-neutral-600/20 placeholder:text-white/20 border border-white/5 text-white rounded-xl px-3 py-1.5">
-                <option value="2">Last 2 Days</option>
-                <option value="7">Last Week</option>
-                <option value="30">Last Month</option>
-                <option value="">All Time</option>
+                <option value="2" <%= filters.dateRange == 2 ? 'selected' : '' %>>Last 2 Days</option>
+                <option value="7" <%= filters.dateRange == 7 ? 'selected' : '' %>>Last Week</option>
+                <option value="30" <%= filters.dateRange == 30 ? 'selected' : '' %>>Last Month</option>
+                <option value="" <%= filters.dateRange == null || filters.dateRange === '' ? 'selected' : '' %>>All Time</option>
               </select>
             </div>
             <div class="flex items-center gap-2">
@@ -66,6 +65,7 @@
               <p class="text-sm text-neutral-500"><%= req.translations.auditLogsNotAvailable %></p>
             <% } %>
           </div>
+          <%- include('../components/pagination', { pagination, filters: { action: filters.actionFilter, dateRange: filters.dateRange } }) %>
         </div>
       </div>
     </div>
@@ -80,27 +80,40 @@
     const sortAsc = document.getElementById('sortAsc');
     const sortDesc = document.getElementById('sortDesc');
     const tableBody = document.getElementById('auditBody');
-    const originalRows = Array.from(tableBody.querySelectorAll('tr'));
+    
+    // Only initialize table interactions if table body exists
+    let originalRows = [];
+    if (tableBody) {
+      originalRows = Array.from(tableBody.querySelectorAll('tr'));
+    }
 
-    function applyFilters() {
-      const selectedAction = actionFilter.value;
-      const selectedRange = parseInt(dateRange.value) || Infinity;
-      const now = new Date().getTime();
-
-      tableBody.innerHTML = '';
-      const filteredRows = originalRows.filter(row => {
-        const action = row.children[1].textContent;
-        const timestamp = parseInt(row.getAttribute('data-timestamp'));
-        const dateDiff = (now - timestamp) / (1000 * 60 * 60 * 24);
-
-        return (selectedAction === '' || action === selectedAction) &&
-               dateDiff <= selectedRange;
-      });
-
-      filteredRows.forEach(row => tableBody.appendChild(row));
+    function navigateWithFilters(page = 1) {
+      const action = actionFilter.value;
+      const range = dateRange.value;
+      const params = new URLSearchParams();
+      params.set('page', page);
+      
+      // Add action filter if set
+      if (action) {
+        params.set('action', action);
+      } else {
+        params.delete('action');
+      }
+      
+      // Add dateRange if set, delete if empty
+      if (range) {
+        params.set('dateRange', range);
+      } else {
+        params.delete('dateRange');
+      }
+      
+      const newUrl = '/admin/auditlogs?' + params.toString();
+      console.log('Navigating to:', newUrl);
+      window.location.href = newUrl;
     }
 
     function sortTable(ascending) {
+      if (!tableBody) return; // Exit if no table
       const rows = Array.from(tableBody.querySelectorAll('tr'));
 
       rows.sort((a, b) => {
@@ -114,11 +127,17 @@
       rows.forEach(row => tableBody.appendChild(row));
     }
 
-    actionFilter.addEventListener('change', applyFilters);
-    dateRange.addEventListener('change', applyFilters);
+    // Change filter and reset to page 1
+    actionFilter.addEventListener('change', () => {
+      navigateWithFilters(1);
+    });
+    dateRange.addEventListener('change', () => {
+      navigateWithFilters(1);
+    });
     sortAsc.addEventListener('click', () => sortTable(true));
     sortDesc.addEventListener('click', () => sortTable(false));
 
-    applyFilters();
+    // Expose function for pagination component
+    window.navigateWithFilters = navigateWithFilters;
   });
 </script>

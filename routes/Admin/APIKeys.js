@@ -4,13 +4,22 @@ const { v4: uuidv4 } = require("uuid");
 const { db } = require("../../handlers/db.js");
 const { logAudit } = require("../../handlers/auditLog.js");
 const { isAdmin } = require("../../utils/isAdmin.js");
+const { getPaginatedAPIKeys, invalidateCache } = require("../../utils/dbHelper.js");
+const cache = require("../../utils/cache.js");
 
 router.get("/admin/apikeys", isAdmin, async (req, res) => {
   try {
+    const page = req.query.page ? parseInt(req.query.page) : 1;
+    const pageSize = req.query.pageSize ? parseInt(req.query.pageSize) : 20;
+
+    // Use pagination for API keys
+    const apiKeysResult = await getPaginatedAPIKeys(page, pageSize);
+
     res.render("admin/apikeys", {
       req,
       user: req.user,
-      apiKeys: (await db.get("apiKeys")) || [],
+      apiKeys: apiKeysResult.data,
+      pagination: apiKeysResult.pagination,
     });
   } catch (error) {
     res.status(500).json({ error: "Failed to retrieve API keys" });
@@ -29,6 +38,10 @@ router.post("/apikeys/create", isAdmin, async (req, res) => {
     apiKeys.push(newApiKey);
     await db.set("apiKeys", apiKeys);
 
+    // Invalidate API keys cache
+    invalidateCache("apiKeys");
+    cache.delete("apiKeys_list"); // Also invalidate validation cache
+
     logAudit(req.user.userId, req.user.username, "apikey:create", req.ip);
     res.status(201).json(newApiKey);
   } catch (error) {
@@ -42,6 +55,11 @@ router.delete("/apikeys/delete", isAdmin, async (req, res) => {
     let apiKeys = (await db.get("apiKeys")) || [];
     apiKeys = apiKeys.filter((key) => key.id !== keyId);
     await db.set("apiKeys", apiKeys);
+
+    // Invalidate API keys cache
+    invalidateCache("apiKeys");
+    cache.delete("apiKeys_list"); // Also invalidate validation cache
+
     logAudit(req.user.userId, req.user.username, "apikey:delete", req.ip);
     res.status(204).send();
   } catch (error) {
