@@ -7,6 +7,9 @@
 ![GitHub license](https://img.shields.io/github/license/skyport-team/panel?style=for-the-badge)
 ![GitHub last commit](https://img.shields.io/github/last-commit/skyport-team/panel?style=for-the-badge)
 
+> [!IMPORTANT]  
+> Skyport 2 is coming from the original team behind Skyport and Argon. This repository is for Skyport v0.x and will be deprecated in the future. Learn more via https://github.com/foundryoss/skyport and https://discord.gg/9MCWSMYTwW
+
 # Skyport Panel
 
 **Skyport Panel** is an open-source control panel built by the [Skyport Team](https://github.com/skyport-team) for managing game servers and apps using Node.js, Express, and Docker.

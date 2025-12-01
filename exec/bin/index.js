@@ -53,7 +53,7 @@ program
     async function performSeeding() {
       try {
         const imagesIndexResponse = await axios.get(
-          "https://raw.githubusercontent.com/skyportlabs/images_v2/main/seed/0.1.0-beta2.json"
+          "https://raw.githubusercontent.com/skyport-team/images/refs/heads/main/seed/0.1.0-beta2.json"
         );
         const imageUrls = imagesIndexResponse.data;
         let imageDataArray = [];

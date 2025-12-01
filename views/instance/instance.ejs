@@ -27,7 +27,7 @@
     }
 </style>
 <main class="overflow-hidden" id="content">
-    <% if (!readEula) { %>
+    <% if (false) { %>
         <% if (instance.imageData.features && instance.imageData.features.includes('eula')) { %>
             <div class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur z-50">
                 <div class="bg-white/5 backdrop-blur py-8 px-8 rounded-2xl shadow-lg w-1/2 h-48">
@@ -245,6 +245,7 @@
         let currentCommandIndex = -1;
         let term;
         let ws;
+        let eulaModalShown = false;
         
         function initWebSocket() {
             const port = window.location.port ? `:${window.location.port}` : '';
@@ -262,6 +263,40 @@
             };
         }
         
+        function showEulaModal() {
+            if (eulaModalShown) return;
+            eulaModalShown = true;
+            
+            const modalHtml = `
+                <div class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur z-50" id="eulaModal">
+                    <div class="bg-white/5 backdrop-blur py-8 px-8 rounded-2xl shadow-lg w-1/2 h-48">
+                        <p class="text-white text-lg font-medium">Do you accept Minecraft's EULA?</p>
+                        <p class="text-sm text-neutral-400">By pressing this button you agree to the <a class="text-white" href="https://account.mojang.com/documents/minecraft_eula" target="_blank">Mojang EULA</a>.</p>
+                        <button 
+                        onclick="acceptEula()" 
+                        class="mt-8 bg-white text-sm font-sm text-gray-800 px-4 font-medium transition py-2 rounded-2xl hover:bg-gray-100">
+                        I agree
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            document.body.insertAdjacentHTML('beforeend', modalHtml);
+        }
+        
+        function acceptEula() {
+            axios.post('/instance/<%= req.params.id %>/imagefeatures/eula')
+                .then(response => {
+                    if (response.status === 200) {
+                        document.getElementById('eulaModal').remove();
+                        eulaModalShown = false;
+                    }
+                })
+                .catch(error => {
+                    console.error('There was an error!', error);
+                });
+        }
+        
         function handleWebSocketMessage(msg) {
             const lines = msg.data.split('\n');
             let isFirstLine = true;
@@ -270,6 +305,12 @@
             lines.forEach(line => {
                 const trimmedLine = line.trim();
                 if (trimmedLine === '' && previousLineWasEmpty) return;
+                
+                // Check for EULA message
+                if (trimmedLine.toLowerCase().includes('you need to agree to the eula') && 
+                    (trimmedLine.toLowerCase().includes('eula.txt') || trimmedLine.toLowerCase().includes('dialog above'))) {
+                    showEulaModal();
+                }
                 
                 if (!isFirstLine && !previousLineWasEmpty) {
                     term.write('\r\n');
