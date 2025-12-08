@@ -175,6 +175,10 @@
                         <input id="cpu" class="rounded-xl focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-4 w-full hover:bg-white/5 px-4 py-2 bg-neutral-600/20 placeholder:text-white/20 border border-white/5" placeholder="1">
                     </div>
                     <div>
+                        <label class="text-neutral-400 text-sm tracking-tight mb-2">Disk (MiB):</label>
+                        <input id="disk" class="rounded-xl focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-4 w-full hover:bg-white/5 px-4 py-2 bg-neutral-600/20 placeholder:text-white/20 border border-white/5" placeholder="10240">
+                    </div>
+                    <div>
                         <label class="text-neutral-400 text-sm tracking-tight mb-2"><%= req.translations.ports %>:</label>
                         <input id="ports" class="rounded-xl focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-4 w-full hover:bg-white/5 px-4 py-2 bg-neutral-600/20 placeholder:text-white/20 border border-white/5" placeholder="25565:25565,8080:8080">
                     </div>
@@ -303,6 +307,7 @@ document.getElementById('createNodeBtn').addEventListener('click', async functio
     const name = document.getElementById('name');
     const memory = document.getElementById('memory');
     const cpu = document.getElementById('cpu');
+    const disk = document.getElementById('disk');
     const ports = document.getElementById('ports');
     const imageDropdown = document.getElementById('image');
     const primaryPort = document.getElementById('primary');
@@ -338,6 +343,11 @@ document.getElementById('createNodeBtn').addEventListener('click', async functio
         isValid = false;
     }
 
+    if (!isPositiveInteger(disk.value)) {
+        showError(disk, 'Disk must be an integer greater than 1.');
+        isValid = false;
+    }
+
     const portPattern = /^(\d+:\d+)(,\d+:\d+)*$/;
     if (!ports.value.match(portPattern)) {
         showError(ports, 'Ports must be in the format "port:port,port:port".');
@@ -365,6 +375,7 @@ document.getElementById('createNodeBtn').addEventListener('click', async functio
         user: document.getElementById('user').value,
         memory: memory.value,
         cpu: cpu.value,
+        disk: disk.value,
         ports: ports.value,
         primary: primaryPort.value,
         configFilePath: configFilePath,

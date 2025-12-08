@@ -532,9 +532,26 @@
         
         function updateDiskUsage(stats) {
             const diskUsageRaw = parseFloat(stats.volumeSize);
-            const diskLimitRaw = 10 * 1024; // Assuming 10GB limit
-            const diskUsagePercent = (diskUsageRaw / diskLimitRaw * 100).toFixed(2);
-            document.getElementById('diskUsage').textContent = `${diskUsagePercent}% (${formatBytes(diskUsageRaw * 1024 * 1024)} / ${formatBytes(diskLimitRaw * 1024 * 1024)})`;
+            const diskLimitMiB = <%= instance.Disk || 0 %>;
+            
+            if (diskLimitMiB === 0) {
+                // Unlimited disk
+                document.getElementById('diskUsage').textContent = `${formatBytes(diskUsageRaw * 1024 * 1024)} / Unlimited`;
+            } else {
+                const diskLimitRaw = diskLimitMiB; // Already in MiB
+                const diskUsagePercent = (diskUsageRaw / diskLimitRaw * 100).toFixed(2);
+                document.getElementById('diskUsage').textContent = `${diskUsagePercent}% (${formatBytes(diskUsageRaw * 1024 * 1024)} / ${formatBytes(diskLimitRaw * 1024 * 1024)})`;
+                
+                // Add visual warning if approaching limit
+                const diskElement = document.getElementById('diskUsage');
+                if (parseFloat(diskUsagePercent) >= 100) {
+                    diskElement.className = 'mt-1 text-lg font-medium tracking-tight text-red-500';
+                } else if (parseFloat(diskUsagePercent) >= 90) {
+                    diskElement.className = 'mt-1 text-lg font-medium tracking-tight text-yellow-500';
+                } else {
+                    diskElement.className = 'mt-1 text-lg font-medium tracking-tight text-white';
+                }
+            }
         }
         
         function updateStatus(stats) {

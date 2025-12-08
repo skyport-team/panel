@@ -17,7 +17,7 @@ router.put("/instances/edit/:id", isAdmin, async (req, res) => {
   }
 
   const { id } = req.params;
-  const { Image, Memory, Cpu } = req.body;
+  const { Image, Memory, Cpu, Disk } = req.body;
 
   try {
     const instance = await db.get(`${id}_instance`);
@@ -25,7 +25,7 @@ router.put("/instances/edit/:id", isAdmin, async (req, res) => {
       return res.status(404).json({ message: "Instance not found" });
     }
 
-    const requestData = prepareEditRequestData(instance, Image, Memory, Cpu);
+    const requestData = prepareEditRequestData(instance, Image, Memory, Cpu, Disk);
     const response = await axios(requestData);
 
     await updateInstanceInDatabase(
@@ -34,6 +34,7 @@ router.put("/instances/edit/:id", isAdmin, async (req, res) => {
       Image,
       Memory,
       Cpu,
+      Disk,
       response.data.newContainerId
     );
 
@@ -52,7 +53,7 @@ router.put("/instances/edit/:id", isAdmin, async (req, res) => {
   }
 });
 
-function prepareEditRequestData(instance, Image, Memory, Cpu) {
+function prepareEditRequestData(instance, Image, Memory, Cpu, Disk) {
   const node = instance.Node;
   return {
     method: "put",
@@ -68,6 +69,7 @@ function prepareEditRequestData(instance, Image, Memory, Cpu) {
       Image: Image || instance.Image,
       Memory: Memory || instance.Memory,
       Cpu: Cpu || instance.Cpu,
+      Disk: Disk || instance.Disk,
       VolumeId: instance.VolumeId,
     },
   };
@@ -79,6 +81,7 @@ async function updateInstanceInDatabase(
   Image,
   Memory,
   Cpu,
+  Disk,
   newContainerId
 ) {
   const updatedInstance = {
@@ -86,6 +89,7 @@ async function updateInstanceInDatabase(
     Image: Image || instance.Image,
     Memory: Memory || instance.Memory,
     Cpu: Cpu || instance.Cpu,
+    Disk: Disk || instance.Disk,
     ContainerId: newContainerId,
   };
 

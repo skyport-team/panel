@@ -39,6 +39,11 @@
                     </div>
     
                     <div>
+                        <label class="text-neutral-400 text-sm tracking-tight mb-2">Disk (MiB):</label>
+                        <input value="<%= instance.Disk || 0 %>" type="number" id="disk" class="rounded-xl focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-4 w-full hover:bg-white/5 px-4 py-2 bg-neutral-600/20 placeholder:text-white/20 border border-white/5" placeholder="10240">
+                    </div>
+    
+                    <div>
                         <label class="text-neutral-400 text-sm tracking-tight mb-2">Ports:</label>
                         <input value="<%= instance.Ports %>" id="ports" class="rounded-xl focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-4 w-full hover:bg-white/5 px-4 py-2 bg-neutral-600/20 placeholder:text-white/20 border border-white/5" placeholder="25565:25565,8080:8080">
                     </div>
@@ -70,6 +75,7 @@
         const ports = document.getElementById('ports');
         const imageDropdown = document.getElementById('image');
         const primaryPort = document.getElementById('primary');
+        const disk = document.getElementById('disk');
         const selectedImage = imageDropdown.options[imageDropdown.selectedIndex];
         const configFilePath = selectedImage.getAttribute('data-configfilepath');
         let configFileContent = selectedImage.getAttribute('data-configfilecontent');
@@ -90,6 +96,11 @@
     
         if (!isPositiveIntegerCpu(cpu.value)) {
             showError(cpu, 'CPU must be an integer greater than 0.');
+            isValid = false;
+        }
+    
+        if (disk.value && !isPositiveInteger(disk.value)) {
+            showError(disk, 'Disk must be an integer greater than 1 or 0 for unlimited.');
             isValid = false;
         }
     
@@ -119,6 +130,7 @@
             user: document.getElementById('user').value,
             memory: memory.value,
             cpu: cpu.value,
+            disk: disk.value || '0',
             ports: ports.value,
             primary: primaryPort.value,
             configFilePath: configFilePath,

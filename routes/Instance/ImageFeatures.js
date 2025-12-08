@@ -41,7 +41,7 @@ router.post("/instance/:id/imagefeatures/eula", async (req, res) => {
     return res.status(500).send("Error updating EULA file");
   }
 
-  res.status(200);
+  res.status(200).json({ message: "EULA accepted" });
 });
 
 module.exports = router;

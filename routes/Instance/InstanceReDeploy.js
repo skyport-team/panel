@@ -26,7 +26,7 @@ router.get("/instances/redeploy/:id", isAdmin, async (req, res) => {
 
     const nodeId = instance.Node.id;
 
-    const { image, memory, cpu, ports, name, user, primary } = req.query;
+    const { image, memory, cpu, disk, ports, name, user, primary } = req.query;
 
     const shortimage = image.match(/\(([^)]+)\)/)[1];
 
@@ -52,6 +52,7 @@ router.get("/instances/redeploy/:id", isAdmin, async (req, res) => {
       shortimage,
       memory,
       cpu,
+      disk,
       ports,
       name,
       node,
@@ -68,6 +69,7 @@ router.get("/instances/redeploy/:id", isAdmin, async (req, res) => {
       shortimage,
       memory,
       cpu,
+      disk,
       ports,
       primary,
       name,
@@ -98,6 +100,7 @@ async function prepareRequestData(
   image,
   memory,
   cpu,
+  disk,
   ports,
   name,
   node,
@@ -126,6 +129,7 @@ async function prepareRequestData(
       Scripts: imageData ? imageData.Scripts : undefined,
       Memory: memory ? parseInt(memory) : undefined,
       Cpu: cpu ? parseInt(cpu) : undefined,
+      Disk: disk ? parseInt(disk) : undefined,
       ExposedPorts: {},
       PortBindings: {},
       AltImages: imageData ? imageData.AltImages : [],
@@ -150,6 +154,7 @@ async function updateDatabaseWithNewInstance(
   image,
   memory,
   cpu,
+  disk,
   ports,
   primary,
   name,
@@ -170,6 +175,7 @@ async function updateDatabaseWithNewInstance(
     VolumeId: id,
     Memory: parseInt(memory),
     Cpu: parseInt(cpu),
+    Disk: disk ? parseInt(disk) : 0,
     Ports: ports,
     Primary: primary,
     Env,

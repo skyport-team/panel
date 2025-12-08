@@ -592,9 +592,26 @@ updateSelectedFiles();
             }
 
             const diskUsageRaw = parseFloat(stats.volumeSize);
-            const diskLimitRaw = 10 * 1024; // Assuming 10GB limit
-            const diskUsagePercent = (diskUsageRaw / diskLimitRaw * 100).toFixed(2);
-            document.getElementById('diskUsage').textContent = `${formatBytes(diskUsageRaw * 1024 * 1024)} / ${formatBytes(diskLimitRaw * 1024 * 1024)} (${diskUsagePercent}%)`;
+            const diskLimitMiB = <%= typeof instance !== 'undefined' && instance.Disk ? instance.Disk : 0 %>;
+            const diskElement = document.getElementById('diskUsage');
+            
+            if (diskLimitMiB === 0) {
+                // Unlimited disk
+                diskElement.textContent = `${formatBytes(diskUsageRaw * 1024 * 1024)} / Unlimited`;
+                diskElement.className = 'text-sm text-neutral-400';
+            } else {
+                const diskUsagePercent = (diskUsageRaw / diskLimitMiB * 100).toFixed(2);
+                diskElement.textContent = `${formatBytes(diskUsageRaw * 1024 * 1024)} / ${formatBytes(diskLimitMiB * 1024 * 1024)} (${diskUsagePercent}%)`;
+                
+                // Add visual warning
+                if (parseFloat(diskUsagePercent) >= 100) {
+                    diskElement.className = 'text-sm text-red-500 font-medium';
+                } else if (parseFloat(diskUsagePercent) >= 90) {
+                    diskElement.className = 'text-sm text-yellow-500';
+                } else {
+                    diskElement.className = 'text-sm text-neutral-400';
+                }
+            }
           } else {
             console.log('Received non-JSON data:', event.data);
           }

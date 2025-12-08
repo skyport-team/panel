@@ -19,6 +19,7 @@ router.get("/instances/deploy", isAdmin, async (req, res) => {
     imagename,
     memory,
     cpu,
+    disk,
     ports,
     nodeId,
     name,
@@ -30,6 +31,7 @@ router.get("/instances/deploy", isAdmin, async (req, res) => {
     !image ||
     !memory ||
     !cpu ||
+    !disk ||
     !ports ||
     !nodeId ||
     !name ||
@@ -50,6 +52,7 @@ router.get("/instances/deploy", isAdmin, async (req, res) => {
       image,
       memory,
       cpu,
+      disk,
       ports,
       name,
       node,
@@ -66,6 +69,7 @@ router.get("/instances/deploy", isAdmin, async (req, res) => {
       image,
       memory,
       cpu,
+      disk,
       ports,
       primary,
       name,
@@ -98,6 +102,7 @@ async function prepareRequestData(
   image,
   memory,
   cpu,
+  disk,
   ports,
   name,
   node,
@@ -126,6 +131,7 @@ async function prepareRequestData(
       Scripts: imageData ? imageData.Scripts : undefined,
       Memory: memory ? parseInt(memory) : undefined,
       Cpu: cpu ? parseInt(cpu) : undefined,
+      Disk: disk ? parseInt(disk) : undefined,
       ExposedPorts: {},
       PortBindings: {},
       variables,
@@ -171,6 +177,7 @@ async function updateDatabaseWithNewInstance(
   image,
   memory,
   cpu,
+  disk,
   ports,
   primary,
   name,
@@ -192,6 +199,7 @@ async function updateDatabaseWithNewInstance(
     VolumeId: Id,
     Memory: parseInt(memory),
     Cpu: parseInt(cpu),
+    Disk: disk ? parseInt(disk) : 0,
     Ports: ports,
     Primary: primary,
     Image: image,
