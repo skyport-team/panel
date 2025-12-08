@@ -238,7 +238,7 @@ app.set("views", [path.join(__dirname, "views"), ...PluginViewsDir]);
 // Init
 init();
 
-console.log(chalk.gray(ascii) + chalk.white(`version v${config.version}\n`));
+console.log(chalk.gray(ascii.replace("{version}", config.version)));
 app.listen(config.port, () =>
   log.info(`Skyport is listening on port ${config.port}`)
 );
