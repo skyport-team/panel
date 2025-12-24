@@ -155,4 +155,66 @@ router.post("/instance/:id/db/create/:name", async (req, res) => {
   }
 });
 
+router.get("/instance/:id/db/delete/:name", async (req, res) => {
+  if (!req.user) {
+    return res.status(401).send("Authentication required");
+  }
+
+  const { id, name } = req.params;
+
+  let instance = await db.get(id + "_instance");
+  if (!instance) {
+    return res.status(404).send("Instance not found");
+  }
+
+  const isAuthorized = await isUserAuthorizedForContainer(
+    req.user.userId,
+    instance.Id
+  );
+  if (!isAuthorized) {
+    return res.status(403).send("Unauthorized access to this instance.");
+  }
+
+  if (instance.Node && instance.Node.address && instance.Node.port) {
+    const requestData = {
+      method: "delete",
+      url: `http://${instance.Node.address}:${
+        instance.Node.port
+      }/database/delete/${encodeURIComponent(name)}`,
+      auth: {
+        username: "Skyport",
+        password: instance.Node.apiKey,
+      },
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+
+    try {
+      let response = await axios(requestData);
+
+      if (response.status === 200) {
+        if (Array.isArray(instance.Databases)) {
+          instance.Databases = instance.Databases.filter(
+            (db) => db.dbName !== name
+          );
+          await db.set(id + "_instance", instance);
+        }
+
+        return res.redirect(`/instance/${id}/db`);
+      } else {
+        return res.status(500).send("Failed to delete database");
+      }
+    } catch (error) {
+      const errorMessage =
+        error.response && error.response.data && error.response.data.message
+          ? error.response.data.message
+          : "Connection to node failed. " + error.message;
+      return res.status(500).send({ message: errorMessage });
+    }
+  } else {
+    return res.status(500).send("Invalid instance node configuration");
+  }
+});
+
 module.exports = router;

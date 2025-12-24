@@ -69,4 +69,59 @@ router.get("/instance/:id/files", async (req, res) => {
   }
 });
 
+
+const axios = require("axios");
+
+router.get("/instance/:id/files/search", async (req, res) => {
+  if (!req.user) {
+    return res.status(401).json({ error: "Unauthorized" });
+  }
+
+  const { id } = req.params;
+  const { q } = req.query;
+
+  if (!q) {
+    return res.status(400).json({ error: "Missing query" });
+  }
+
+  try {
+    const instance = await db.get(id + "_instance");
+    if (!instance) {
+      return res.status(404).json({ error: "Instance not found" });
+    }
+
+    const isAuthorized = await isUserAuthorizedForContainer(
+      req.user.userId,
+      instance.Id
+    );
+    if (!isAuthorized) {
+      return res.status(403).json({ error: "Unauthorized" });
+    }
+
+    const suspended = await isInstanceSuspended(req.user.userId, instance, id);
+    if (suspended) {
+        return res.status(403).json({ error: "Instance is suspended" });
+    }
+
+    if (instance.Node && instance.Node.address && instance.Node.port) {
+        const response = await axios.get(
+            `http://${instance.Node.address}:${instance.Node.port}/fs/${instance.VolumeId}/search?q=${encodeURIComponent(q)}`,
+            {
+                auth: {
+                    username: "Skyport",
+                    password: instance.Node.apiKey,
+                },
+            }
+        );
+        res.json(response.data);
+    } else {
+        res.status(500).json({ error: "Invalid node configuration" });
+    }
+
+  } catch (error) {
+    console.error("Search error:", error);
+    res.status(500).json({ error: "Failed to search files" });
+  }
+});
+
 module.exports = router;
