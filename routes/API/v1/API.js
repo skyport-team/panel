@@ -591,6 +591,7 @@ router.get("/api/v1/nodes", validateApiKey, async (req, res) => {
  * @returns {Object} The created node
  */
 router.post("/api/v1/nodes/create", validateApiKey, async (req, res) => {
+  const configureKey = uuidv4();
   const node = {
     id: uuidv4(),
     name: req.body.name,
