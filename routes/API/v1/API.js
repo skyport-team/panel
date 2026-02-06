@@ -638,15 +638,24 @@ router.post("/api/v1/nodes/create", validateApiKey, async (req, res) => {
  */
 router.delete("/api/v1/nodes/:id/delete", validateApiKey, async (req, res) => {
   const { id } = req.params;
-  const nodes = (await db.get("nodes")) || [];
-  const newNodes = nodes.filter((id) => id !== id);
 
-  if (!id) return res.send("The node ID was invalid");
+  if (!id) {
+    return res.status(400).json({ error: "The node ID is required" });
+  }
+
+  const nodes = (await db.get("nodes")) || [];
+  
+  // Check if node exists
+  if (!nodes.includes(id)) {
+    return res.status(404).json({ error: "Node not found" });
+  }
+
+  const newNodes = nodes.filter((nodeId) => nodeId !== id);
 
   await db.set("nodes", newNodes);
   await db.delete(id + "_node");
 
-  res.status(201).json({ Message: "The node has successfully deleted." });
+  res.status(200).json({ message: "The node has been successfully deleted." });
 });
 
 /*** Helper Functions ***/
