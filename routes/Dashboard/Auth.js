@@ -551,7 +551,7 @@ function generateRandomCode(length) {
  *
  * @returns {Response} No specific return value but ends the user's session and redirects.
  */
-router.get("/auth/logout", (req, res) => {
+router.get("/auth/logout", (req, res, next) => {
   req.logout(req.user, (err) => {
     if (err) return next(err);
     res.redirect("/");
