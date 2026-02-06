@@ -77,8 +77,8 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 const postRateLimiter = rateLimit({
-  windowMs: 60 * 100,
-  max: 6,
+  windowMs: 60 * 1000, // 1 minute
+  max: 30, // 30 requests per minute
   message: "Too many requests, please try again later",
 });
 

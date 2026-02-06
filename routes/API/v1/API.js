@@ -5,6 +5,7 @@ const bcrypt = require("bcrypt");
 const axios = require("axios");
 const { sendPasswordResetEmail } = require("../../../handlers/email.js");
 const { db } = require("../../../handlers/db.js");
+const { logAudit } = require("../../../handlers/auditLog.js");
 const { checkNodeStatus, checkMultipleNodesStatus, invalidateNodeCache } = require("../../../utils/nodeHelper.js");
 const { batchGet, paginate, invalidateCache } = require("../../../utils/dbHelper.js");
 const cache = require("../../../utils/cache.js");
@@ -274,8 +275,8 @@ router.post(
 
       await db.set("instances", instances);
 
-      logAudit(req.user.userId, req.user.username, "instance:suspend", req.ip);
-      res.status(201).json({ success: "Instance Suspended Successfully" });
+      logAudit(req.apiKey.id, "API", "instance:suspend", req.ip);
+      res.status(200).json({ success: "Instance Suspended Successfully" });
     } catch (error) {
       log.error("Error in suspend instance:", error);
       res.status(500).send("An error occurred while suspending the instance");
@@ -325,14 +326,9 @@ router.post(
 
       await db.set("instances", instances);
 
-      logAudit(
-        req.user.userId,
-        req.user.username,
-        "instance:unsuspend",
-        req.ip
-      );
+      logAudit(req.apiKey.id, "API", "instance:unsuspend", req.ip);
 
-      res.status(201).json({ success: "Instance Suspended Successfully" });
+      res.status(200).json({ success: "Instance Unsuspended Successfully" });
     } catch (error) {
       log.error("Error in unsuspend instance :", error);
       res.status(500).send("An error occurred while unsuspending the instance");
