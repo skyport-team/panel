@@ -120,7 +120,7 @@ async function addUserToUsersTable(username, email, password, verified) {
     await db.set("users", users);
 
     if (!newUser.welcomeEmailSent) {
-      await sendWelcomeEmail(email, username, password);
+      await sendWelcomeEmail(email, username);
       newUser.welcomeEmailSent = true;
 
       if (!verified) {
@@ -284,13 +284,6 @@ router.post("/2fa", async (req, res, next) => {
   }
 });
 
-router.get(
-  "/auth/login",
-  passport.authenticate("local", {
-    successRedirect: "/instances",
-    failureRedirect: "/login?err=InvalidCredentials&state=failed",
-  })
-);
 
 router.get("/verify/:token", async (req, res) => {
   const { token } = req.params;
@@ -402,6 +395,26 @@ async function initializeRoutes() {
           router.post("/auth/register", async (req, res) => {
             const { username, email, password } = req.body;
 
+            if (!username || !email || !password) {
+              return res.status(400).send("Username, email, and password are required.");
+            }
+
+            if (typeof username !== "string" || username.length < 3 || username.length > 32) {
+              return res.status(400).send("Username must be between 3 and 32 characters.");
+            }
+
+            if (typeof email !== "string" || !email.includes("@") || email.length > 254) {
+              return res.status(400).send("Invalid email address.");
+            }
+
+            if (typeof password !== "string" || password.length < 8) {
+              return res.status(400).send("Password must be at least 8 characters.");
+            }
+
+            if (!/^[a-zA-Z0-9_-]+$/.test(username)) {
+              return res.status(400).send("Username can only contain letters, numbers, hyphens and underscores.");
+            }
+
             try {
               const userExists = await doesUserExist(username);
               const emailExists = await doesEmailExist(email);
@@ -443,7 +456,7 @@ async function initializeRoutes() {
     }
   }
   await updateRoutes();
-  setInterval(updateRoutes, 1000);
+  setInterval(updateRoutes, 30000);
 }
 
 initializeRoutes();
@@ -473,6 +486,7 @@ router.post("/auth/reset-password", async (req, res) => {
 
     const resetToken = generateRandomCode(30);
     user.resetToken = resetToken;
+    user.resetTokenExpiry = Date.now() + 3600000; // 1 hour
     await db.set("users", users);
 
     await sendPasswordResetEmail(email, resetToken);
@@ -491,7 +505,12 @@ router.get("/auth/reset/:token", async (req, res) => {
     const users = (await db.get("users")) || [];
     const user = users.find((u) => u.resetToken === token);
 
-    if (!user) {
+    if (!user || (user.resetTokenExpiry && Date.now() > user.resetTokenExpiry)) {
+      if (user) {
+        delete user.resetToken;
+        delete user.resetTokenExpiry;
+        await db.set("users", users);
+      }
       res.send("Invalid or expired token.");
       return;
     }
@@ -518,7 +537,12 @@ router.post("/auth/reset/:token", async (req, res) => {
 
     const user = users.find((user) => user.resetToken === token);
 
-    if (!user) {
+    if (!user || (user.resetTokenExpiry && Date.now() > user.resetTokenExpiry)) {
+      if (user) {
+        delete user.resetToken;
+        delete user.resetTokenExpiry;
+        await db.set("users", users);
+      }
       res.redirect("/login?msg=PasswordReset&state=failed");
       return;
     }
@@ -526,6 +550,7 @@ router.post("/auth/reset/:token", async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, saltRounds);
     user.password = hashedPassword;
     delete user.resetToken;
+    delete user.resetTokenExpiry;
     await db.set("users", users);
 
     res.redirect("/login?msg=PasswordReset&state=success");
@@ -536,13 +561,7 @@ router.post("/auth/reset/:token", async (req, res) => {
 });
 
 function generateRandomCode(length) {
-  const characters =
-    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-  let result = "";
-  for (let i = 0; i < length; i++) {
-    result += characters.charAt(Math.floor(Math.random() * characters.length));
-  }
-  return result;
+  return require("crypto").randomBytes(length).toString("hex").slice(0, length);
 }
 
 /**

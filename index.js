@@ -47,6 +47,13 @@ const { init } = require("./handlers/init.js");
 
 const log = new (require("cat-loggr"))();
 
+process.on("uncaughtException", (err) => {
+  log.error("Uncaught Exception:", err);
+});
+process.on("unhandledRejection", (reason) => {
+  log.error("Unhandled Rejection:", reason);
+});
+
 app.use(
   session({
     store: new SqliteStore({
@@ -56,9 +63,9 @@ app.use(
         intervalMs: 9000000,
       },
     }),
-    secret: config.session_secret || "secret",
-    resave: true,
-    saveUninitialized: true,
+    secret: config.session_secret || (() => { throw new Error("FATAL: session_secret is not set in config.json. Refusing to start with insecure default."); })(),
+    resave: false,
+    saveUninitialized: false,
   })
 );
 
@@ -239,13 +246,13 @@ app.set("views", [path.join(__dirname, "views"), ...PluginViewsDir]);
 init();
 
 console.log(chalk.gray(ascii.replace("{version}", config.version)));
-app.listen(config.port, () =>
-  log.info(`Skyport is listening on port ${config.port}`)
-);
-
 app.get("*", async function (req, res) {
   res.render("errors/404", {
     req,
     name: (await db.get("name")) || "Skyport",
   });
 });
+
+app.listen(config.port, () =>
+  log.info(`Skyport is listening on port ${config.port}`)
+);

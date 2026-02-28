@@ -26,7 +26,7 @@ async function getSMTPSettings() {
   };
 }
 
-function getWelcomeEmailHTML(username, password, companyName) {
+function getWelcomeEmailHTML(username, companyName) {
   return `
     <html>
       <body>
@@ -36,8 +36,8 @@ function getWelcomeEmailHTML(username, password, companyName) {
         <p>Your account details:</p>
         <ul>
           <li><strong>Username:</strong> ${username}</li>
-          <li><strong>Password:</strong> ${password}</li>
         </ul>
+        <p>You can log in at your panel URL using the credentials you chose during registration.</p>
         <p>We hope you enjoy using ${companyName}!</p>
         <p>This is an automated message. Please do not reply.</p>
       </body>
@@ -50,13 +50,13 @@ async function sendEmail(mailOptions) {
   return transporter.sendMail(mailOptions);
 }
 
-async function sendWelcomeEmail(email, username, password) {
+async function sendWelcomeEmail(email, username) {
   const { name } = await getSMTPSettings();
   const mailOptions = {
     from: `${name} <${name}@skyport.dev>`,
     to: email,
     subject: `Welcome to ${name}`,
-    html: getWelcomeEmailHTML(username, password, name),
+    html: getWelcomeEmailHTML(username, name),
   };
   await sendEmail(mailOptions);
   console.log(`Welcome email sent to ${email}`);

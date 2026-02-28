@@ -4,6 +4,7 @@ const {
   isUserAuthorizedForContainer,
   isInstanceSuspended,
 } = require("../../utils/authHelper");
+const { db } = require("../../handlers/db.js");
 
 router.post("/instance/:id/power", async (req, res) => {
   if (!req.user) return res.redirect("/");

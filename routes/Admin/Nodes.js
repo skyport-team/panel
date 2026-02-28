@@ -201,7 +201,7 @@ router.post("/nodes/delete", isAdmin, async (req, res) => {
         }
 
         try {
-          await axios.get(
+          await axios.post(
             `http://Skyport:${node.apiKey}@${node.address}:${node.port}/instances/purge/all`
           );
         } catch (apiError) {
@@ -231,7 +231,7 @@ router.post("/nodes/delete", isAdmin, async (req, res) => {
  * Allows a node to set its own access key using the configureKey.
  * The request must include a valid authKey from config.json for security.
  */
-router.post("/nodes/configure", async (req, res) => {
+router.post("/nodes/configure", isAdmin, async (req, res) => {
   const { configureKey, accessKey } = req.query;
 
   if (!configureKey || !accessKey) {
