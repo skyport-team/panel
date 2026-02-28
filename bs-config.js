@@ -1,9 +1,9 @@
 module.exports = {
-  proxy: "http://localhost:3001",
+  proxy: "http://localhost:8001",
   files: ["views/**/*.ejs"],
-  port: 2000,
+  port: 8005,
   ui: {
-    port: 3005,
+    port: 8006,
   },
   open: false,
   notify: false,
