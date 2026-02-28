@@ -142,6 +142,7 @@ function getLanguages() {
 }
 
 app.get("/setLanguage", async (req, res) => {
+  if (!req.user) return res.json({ success: false });
   const lang = req.query.lang;
   if (lang && getLanguages().includes(lang)) {
     res.cookie("lang", lang, {
@@ -235,7 +236,6 @@ const PluginViewsDir = fs
   .map((addonName) => path.join(pluginDir, addonName, "views"));
 app.set("views", [path.join(__dirname, "views"), ...PluginViewsDir]);
 
-// Init
 init();
 
 console.log(chalk.gray(ascii.replace("{version}", config.version)));
