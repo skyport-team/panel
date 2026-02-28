@@ -27,7 +27,11 @@ async function deleteInstance(instance) {
     };
 
     await axios(requestData);
+  } catch (error) {
+    log.warn(`Docker delete failed for ${instance.Id} (container may already be removed): ${error.message}`);
+  }
 
+  try {
     let userInstances = (await db.get(instance.User + "_instances")) || [];
     userInstances = userInstances.filter((obj) => obj.Id !== instance.Id);
     await db.set(instance.User + "_instances", userInstances);
@@ -45,7 +49,7 @@ async function deleteInstance(instance) {
     invalidateCache("instances");
     invalidateCache(instance.User + "_instances");
   } catch (error) {
-    log.error(`Error deleting instance ${instance.Id}:`, error);
+    log.error(`Error cleaning up database for instance ${instance.Id}:`, error);
     throw error;
   }
 }
