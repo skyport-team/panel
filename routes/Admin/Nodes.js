@@ -21,15 +21,15 @@ router.get("/admin/nodes", isAdmin, async (req, res) => {
   let set = {};
   
   // Optimized: Count instances per node
+  // Optimized: Count instances per node
   nodeIds.forEach(function (nodeId) {
     set[nodeId] = 0;
     instances.forEach(function (instance) {
-      if (instance.Node.id == nodeId) {
+      if (instance && (instance.node == nodeId || (instance.Node && instance.Node.id == nodeId))) {
         set[nodeId]++;
       }
     });
   });
-
   // Use optimized batch operation for node status checks
   let nodes = await checkMultipleNodesStatus(nodeIds);
 

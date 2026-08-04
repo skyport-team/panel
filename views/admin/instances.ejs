@@ -1,47 +1,49 @@
 <%- include('../components/template') %>
 <main id="content">
   <style>
-.input-error {
-    border: 2px solid rgb(255, 69, 69);
-}
-
-.error-message {
-    color: rgb(255, 69, 69);
-    font-size: 0.9rem;
-}
+    .input-error {
+      border: 2px solid rgb(255, 69, 69);
+    }
+    .error-message {
+      color: rgb(255, 69, 69);
+      font-size: 0.9rem;
+    }
   </style>
-   <div class="bg-transparent">
-      <div class="sm:flex sm:items-center px-8 pt-4">
-         <div class="sm:flex-auto">
-           <h1 class="text-base font-medium leading-6 text-white"><%= req.translations.instances %></h1>
-           <p class="mt-1 tracking-tight text-sm text-neutral-500"><%= req.translations.instancesText %></p>
-         </div>
-         <div class="mt-4 sm:ml-8 sm:mt-0 sm:flex-none">
-           <button id="createButton" type="button" class="block rounded-xl <%= theme['button-color'] %> px-3 py-2 text-center text-sm font-medium shadow-lg transition focus:outline focus:outline-2 focus:outline-offset-2">
-            <%= req.translations.createNewInstance %>
-          </button>
-         </div>
-       </div>
- <% if (req.query.err == "CREATED") { %>
+
+  <div class="bg-transparent">
+    <div class="sm:flex sm:items-center px-8 pt-4">
+      <div class="sm:flex-auto">
+        <h1 class="text-base font-medium leading-6 text-white"><%= req.translations.instances %></h1>
+        <p class="mt-1 tracking-tight text-sm text-neutral-500"><%= req.translations.instancesText %></p>
+      </div>
+      <div class="mt-4 sm:ml-8 sm:mt-0 sm:flex-none">
+        <button id="createButton" type="button" class="block rounded-xl <%= theme['button-color'] %> px-3 py-2 text-center text-sm font-medium shadow-lg transition focus:outline focus:outline-2 focus:outline-offset-2">
+          <%= req.translations.createNewInstance %>
+        </button>
+      </div>
+    </div>
+
+    <% if (req.query.err == "CREATED") { %>
       <div class="mt-6 w-full">
         <div class="rounded-xl bg-emerald-800/10 px-4 py-6 mt-8 ml-8 mb-8 mr-8">
           <div class="flex">
-             <div class="flex-shrink-0 ml-1.5">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5 mt-2 text-emerald-400">
-                  <path fill-rule="evenodd" d="M16.704 4.153a.75.75 0 0 1 .143 1.052l-8 10.5a.75.75 0 0 1-1.127.075l-4.5-4.5a.75.75 0 0 1 1.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 0 1 1.05-.143Z" clip-rule="evenodd" />
-                </svg>                
-             </div>
-             <div class="ml-5">
-                <h3 class="text-sm font-medium text-emerald-400">Action completed!</h3>
-                <div class="text-sm text-emerald-400/50">
-                   <p>The instance was created successfully. Please allow a few minutes for it to finish installing and downloading additional files. </p>
-                </div>
-             </div>
+            <div class="flex-shrink-0 ml-1.5">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5 mt-2 text-emerald-400">
+                <path fill-rule="evenodd" d="M16.704 4.153a.75.75 0 0 1 .143 1.052l-8 10.5a.75.75 0 0 1-1.127.075l-4.5-4.5a.75.75 0 0 1 1.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 0 1 1.05-.143Z" clip-rule="evenodd" />
+              </svg>        
+            </div>
+            <div class="ml-5">
+              <h3 class="text-sm font-medium text-emerald-400">Action completed!</h3>
+              <div class="text-sm text-emerald-400/50">
+                <p>The instance was created successfully. Please allow a few minutes for it to finish installing and downloading additional files.</p>
+              </div>
+            </div>
           </div>
-       </div>
-      <% } %>	  
- 
-      <div style="display: block;" id="instanceTable" class="mt-6 w-full">
+        </div>
+      </div>
+    <% } %>  
+
+    <div style="display: block;" id="instanceTable" class="mt-6 w-full">
       <table class="mt-6 w-full whitespace-nowrap text-left">
         <colgroup>
           <col class="w-full sm:w-4/12">
@@ -54,413 +56,407 @@
         <thead class="border-b border-white/5 text-sm leading-6 text-white">
           <tr>
             <th scope="col" class="py-2 pl-4 pr-8 font-medium sm:pl-6 lg:pl-8"><%= req.translations.name %></th>
-		      	<th scope="col" class="py-2 pl-0 pr-8 font-medium sm:table-cell">State</th>
+            <th scope="col" class="py-2 pl-0 pr-8 font-medium sm:table-cell">State</th>
             <th scope="col" class="py-2 pl-0 pr-8 font-medium sm:table-cell"><%= req.translations.node %></th>
             <th scope="col" class="py-2 pl-0 pr-8 font-medium sm:table-cell"><%= req.translations.dockerID %></th>
             <th scope="col" class="py-2 pl-0 pr-4 text-right font-medium sm:pr-8 sm:text-left lg:pr-20"><%= req.translations.volumeANDMount %></th>
           </tr>
         </thead>
         <tbody class="divide-y divide-white/5">
-          <% if (instances.length == 0) { %>
+          <% if (!instances || instances.length == 0) { %>
             <tr>
-              <td colspan="4" class="text-center py-4">
+              <td colspan="5" class="text-center py-4">
                 <p class="text-sm text-neutral-400"><%= req.translations.noInstancesText %></p>
               </td>
             </tr>
-          <% } %>
-         <% instances.forEach(function(instance) { %>
-          <tr class="cursor-pointer hover:bg-white/5 transition" onclick="location.href='/instance/<%= instance.Id %>'">
-            <td class="py-4 pl-4 pr-8 sm:pl-6 lg:pl-8">
-              <div class="flex items-center gap-x-4">
-                <div class="truncate text-sm font-medium leading-6 text-white"><%= instance.Name %></div>
-              </div>
-            </td>
-            <td class="py-4 pl-0 pr-4 sm:table-cell sm:pr-8">
-              <div class="flex gap-x-3">
-                <div class="font-mono text-sm leading-6 text-neutral-400"><%= instance.InternalState %></div>
-              </div>
-            </td>
-            <td class="py-4 pl-0 pr-4 sm:table-cell sm:pr-8">
-              <div class="flex gap-x-3">
-                <div class="font-mono text-sm leading-6 text-neutral-400"><%= instance.Node.name %></div>
-              </div>
-            </td>
-            <td class="py-4 pl-0 pr-4 sm:table-cell sm:pr-8">
-              <div class="flex gap-x-3">
-                <div class="font-mono text-sm leading-6 text-neutral-400"><%= instance.ContainerId %></div>
-              </div>
-            </td>
-            <td class="py-4 pl-0 pr-4 text-sm leading-6 sm:pr-8 lg:pr-20">
-              <div class="flex gap-x-3">
-                <div class="font-mono text-sm leading-6 text-neutral-400">/volumes/<%= instance.VolumeId %></div>
-              </div>
-            </td>
-            <td class="py-4 pl-0 pr-4 text-right sm:pr-8 lg:pr-20">
-              <div class="flex gap-x-3">
-                <button onclick="location.href='/admin/instance/delete/<%= instance.Id %>'; event.stopPropagation();" class="block rounded-xl bg-red-600 px-3 py-2 text-center text-sm font-medium text-white shadow-lg hover:bg-red-500 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
-                  <%= req.translations.remove %>
-                </button>
-                <% if (instance.suspended === true) { %>
-                  <% if (instance['suspended-flagg']) { %>
+          <% } else { %>
+            <% instances.forEach(function(instance) { %>
+              <% if (!instance) return; %>
+              <% const instId = instance.Id || instance.id || instance.UUID || ''; %>
+              <% const instName = instance.Name || instance.name || 'Servidor'; %>
+              <% const nodeName = (instance.Node && instance.Node.name) ? instance.Node.name : (instance.node || 'node-1'); %>
+              <% const container = instance.ContainerId || instance.dockerId || 'N/A'; %>
+              <% const volId = instance.VolumeId || instance.volume || ''; %>
 
-                    <button onclick="openSuspendInfoModal('<%= instance['suspended-flagg'] %>'); event.stopPropagation();" class="block rounded-xl bg-yellow-600/5 border border-1 border-neutral-200/5 px-3 py-1 text-center text-sm font-medium shadow-lg transition-all duration-300 ease-in-out focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 hover:bg-yellow-400/10 hover:text-white hover:shadow-xl hover:scale-105">
-                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="h-6 w-6 text-yellow-500 mx-auto">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" />
-                      </svg>
+              <tr class="cursor-pointer hover:bg-white/5 transition" onclick="if ('<%= instId %>') location.href='/instance/<%= instId %>'">
+                <td class="py-4 pl-4 pr-8 sm:pl-6 lg:pl-8">
+                  <div class="flex items-center gap-x-4">
+                    <div class="truncate text-sm font-medium leading-6 text-white"><%= instName %></div>
+                  </div>
+                </td>
+                <td class="py-4 pl-0 pr-4 sm:table-cell sm:pr-8">
+                  <div class="flex gap-x-3">
+                    <div class="font-mono text-sm leading-6 text-neutral-400"><%= instance.InternalState || instance.status || 'Offline' %></div>
+                  </div>
+                </td>
+                <td class="py-4 pl-0 pr-4 sm:table-cell sm:pr-8">
+                  <div class="flex gap-x-3">
+                    <div class="font-mono text-sm leading-6 text-neutral-400"><%= nodeName %></div>
+                  </div>
+                </td>
+                <td class="py-4 pl-0 pr-4 sm:table-cell sm:pr-8">
+                  <div class="flex gap-x-3">
+                    <div class="font-mono text-sm leading-6 text-neutral-400"><%= container %></div>
+                  </div>
+                </td>
+                <td class="py-4 pl-0 pr-4 text-sm leading-6 sm:pr-8 lg:pr-20">
+                  <div class="flex gap-x-3">
+                    <div class="font-mono text-sm leading-6 text-neutral-400">/volumes/<%= volId %></div>
+                  </div>
+                </td>
+                <td class="py-4 pl-0 pr-4 text-right sm:pr-8 lg:pr-20">
+                  <div class="flex gap-x-3">
+                    <button onclick="location.href='/admin/instance/delete/<%= instId %>'; event.stopPropagation();" class="block rounded-xl bg-red-600 px-3 py-2 text-center text-sm font-medium text-white shadow-lg hover:bg-red-500 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                      <%= req.translations.remove %>
                     </button>
-                    
-                  <% } %>
-                  <form action="/admin/instances/unsuspend/<%= instance.Id %>" method="POST">
-                    <button type="submit" onclick="event.stopPropagation();" class="block rounded-xl <%= theme['button-color'] %> px-3 py-2 text-center text-sm font-medium shadow-lg transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
-                      <%= req.translations.unsuspend %>
+                    <% if (instance.suspended === true) { %>
+                      <% if (instance['suspended-flagg']) { %>
+                        <button onclick="openSuspendInfoModal('<%= instance['suspended-flagg'] %>'); event.stopPropagation();" class="block rounded-xl bg-yellow-600/5 border border-1 border-neutral-200/5 px-3 py-1 text-center text-sm font-medium shadow-lg transition-all duration-300 ease-in-out hover:bg-yellow-400/10 hover:text-white hover:shadow-xl hover:scale-105">
+                          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="h-6 w-6 text-yellow-500 mx-auto">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" />
+                          </svg>
+                        </button>
+                      <% } %>
+                      <form action="/admin/instances/unsuspend/<%= instId %>" method="POST" class="inline">
+                        <button type="submit" onclick="event.stopPropagation();" class="block rounded-xl <%= theme['button-color'] %> px-3 py-2 text-center text-sm font-medium shadow-lg transition">
+                          <%= req.translations.unsuspend %>
+                        </button>
+                      </form>
+                    <% } else { %>
+                      <form action="/admin/instances/suspend/<%= instId %>" method="POST" class="inline">
+                        <button type="submit" onclick="event.stopPropagation();" class="block rounded-xl <%= theme['button-color'] %> px-3 py-2 text-center text-sm font-medium shadow-lg transition">
+                          <%= req.translations.suspend %>
+                        </button>
+                      </form>
+                    <% } %>        
+                    <button onclick="location.href='/admin/instances/<%= instId %>/edit'; event.stopPropagation();" class="block rounded-xl <%= theme['button-color'] %> px-3 py-2 text-center text-sm font-medium shadow-lg transition">
+                      <%= req.translations.edit %>
                     </button>
-                  </form>
-                <% } else { %>
-                  <form action="/admin/instances/suspend/<%= instance.Id %>" method="POST">
-                    <button type="submit" onclick="event.stopPropagation();" class="block rounded-xl <%= theme['button-color'] %> px-3 py-2 text-center text-sm font-medium shadow-lg transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
-                      <%= req.translations.suspend %>
-                    </button>
-                  </form>
-                <% } %>        
-                <button onclick="location.href='/admin/instances/<%= instance.Id %>/edit'; event.stopPropagation();" class="block rounded-xl <%= theme['button-color'] %> px-3 py-2 text-center text-sm font-medium shadow-lg transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
-                  <%= req.translations.edit %>
-                </button>
-              </div>
-            </td>
-          </tr>
-          <% }); %>
+                  </div>
+                </td>
+              </tr>
+            <% }); %>
+          <% } %>
         </tbody>
       </table>
-      </div>
-      <%- include('../components/pagination', { pagination }) %>
-
-      <div id="instanceForm" class="hidden flex gap-4 mt-6 px-8 w-full">
-        <div class="p-3 bg-transparent shadow-xl border border-white/5 rounded-xl overflow-hidden sm:p-6 lg:p-10 card" style="width: 800px;">
-            <form>
-                <div class="grid grid-cols-2 gap-4">
-                    <div>
-                        <label class="text-neutral-400 text-sm tracking-tight mb-2"><%= req.translations.name %>:</label>
-                        <input id="name" class="rounded-xl focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-4 w-full hover:bg-white/5 px-4 py-2 bg-neutral-600/20 placeholder:text-white/20 border border-white/5" placeholder="My instance">
-                    </div>
-                    <div>
-                        <label class="text-neutral-400 text-sm tracking-tight mb-2"><%= req.translations.user %>:</label>
-                        <select id="user" class="rounded-xl focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-4 w-full hover:bg-white/5 px-4 py-2 bg-neutral-600/20 placeholder:text-white/20 border border-white/5">
-                            <% users.forEach(function(user) { %>
-                                <option value="<%= user.userId %>" class="text-neutral-800 text-sm tracking-tight mb-2"><%= user.username %></option>
-                            <% }); %>
-                        </select>
-                    </div>
-                    <div>
-                      <label class="text-neutral-400 text-sm tracking-tight mb-2"><%= req.translations.image %>:</label>
-                      <select id="image" class="rounded-xl focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-4 w-full hover:bg-white/5 px-4 py-2 bg-neutral-600/20 placeholder:text-white/20 border border-white/5">
-                          <% images.forEach(function(image) { %>
-                              <option value="<%= image.Image %>" class="text-neutral-800 text-sm tracking-tight mb-2" data-configfilepath="<%= image.ConfigFilePath %>" data-imagename="<%= image.Name %>" data-configfilecontent="<%= image.ConfigFileContent %>" data-variables="<%= JSON.stringify(image.Variables) %>"><%= image.Name %> (<%= image.Image %>)</option>
-                          <% }); %>
-                      </select>
-                  </div>
-                    <div>
-                        <label class="text-neutral-400 text-sm tracking-tight mb-2"><%= req.translations.node %>:</label>
-                        <select id="node" class="rounded-xl focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-4 w-full hover:bg-white/5 px-4 py-2 bg-neutral-600/20 placeholder:text-white/20 border border-white/5">
-                            <% nodes.forEach(function(node) { %>
-                                <option value="<%= node.id %>" class="text-neutral-800 text-sm tracking-tight mb-2"><%= node.name %></option>
-                            <% }); %>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="text-neutral-400 text-sm tracking-tight mb-2"><%= req.translations.memory %> (MiB):</label>
-                        <input id="memory" class="rounded-xl focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-4 w-full hover:bg-white/5 px-4 py-2 bg-neutral-600/20 placeholder:text-white/20 border border-white/5" placeholder="2048">
-                    </div>
-                    <div>
-                        <label class="text-neutral-400 text-sm tracking-tight mb-2"><%= req.translations.cpuThreads %>:</label>
-                        <input id="cpu" class="rounded-xl focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-4 w-full hover:bg-white/5 px-4 py-2 bg-neutral-600/20 placeholder:text-white/20 border border-white/5" placeholder="1">
-                    </div>
-                    <div>
-                        <label class="text-neutral-400 text-sm tracking-tight mb-2">Disk (MiB):</label>
-                        <input id="disk" class="rounded-xl focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-4 w-full hover:bg-white/5 px-4 py-2 bg-neutral-600/20 placeholder:text-white/20 border border-white/5" placeholder="10240">
-                    </div>
-                    <div>
-                        <label class="text-neutral-400 text-sm tracking-tight mb-2"><%= req.translations.ports %>:</label>
-                        <input id="ports" class="rounded-xl focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-4 w-full hover:bg-white/5 px-4 py-2 bg-neutral-600/20 placeholder:text-white/20 border border-white/5" placeholder="25565:25565,8080:8080">
-                    </div>
-                    <div>
-                        <label class="text-neutral-400 text-sm tracking-tight mb-2"><%= req.translations.primaryPort %>:</label>
-                        <input id="primary" class="rounded-xl focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-4 w-full hover:bg-white/5 px-4 py-2 bg-neutral-600/20 placeholder:text-white/20 border border-white/5" placeholder="25565">
-                    </div>
-                </div>
-                <div class="mt-4">
-                    <button id="createNodeBtn" type="button" class="block rounded-xl <%= theme['button-color'] %> px-3 py-2 text-center text-sm font-medium shadow-lg transition focus:outline focus:outline-2 focus:outline-offset-2">
-                      <%= req.translations.create %>
-                    </button>
-                </div>
-            </form>
-        </div>
-        <div id="secondCard" class="p-3 bg-transparent shadow-xl border border-white/5 rounded-xl overflow-hidden sm:p-6 lg:p-10 card hidden" style="width: 800px;">
-          <form id="variablesForm">
-        </form>
-        </div>
     </div>
+
+    <%- include('../components/pagination', { pagination }) %>
+
+    <!-- Formulario para desplegar nueva instancia -->
+    <div id="instanceForm" class="hidden flex gap-4 mt-6 px-8 w-full">
+      <div class="p-3 bg-transparent shadow-xl border border-white/5 rounded-xl overflow-hidden sm:p-6 lg:p-10 card" style="width: 800px;">
+        <form>
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="text-neutral-400 text-sm tracking-tight mb-2"><%= req.translations.name %>:</label>
+              <input id="name" class="rounded-xl focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-4 w-full hover:bg-white/5 px-4 py-2 bg-neutral-600/20 placeholder:text-white/20 border border-white/5" placeholder="My instance">
+            </div>
+            <div>
+              <label class="text-neutral-400 text-sm tracking-tight mb-2"><%= req.translations.user %>:</label>
+              <select id="user" class="rounded-xl focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-4 w-full hover:bg-white/5 px-4 py-2 bg-neutral-600/20 border border-white/5">
+                <% if (typeof users !== 'undefined' && users) { %>
+                  <% users.forEach(function(user) { %>
+                    <option value="<%= user.userId %>" class="text-neutral-800 text-sm"><%= user.username %></option>
+                  <% }); %>
+                <% } %>
+              </select>
+            </div>
+            <div>
+              <label class="text-neutral-400 text-sm tracking-tight mb-2"><%= req.translations.image %>:</label>
+              <select id="image" class="rounded-xl focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-4 w-full hover:bg-white/5 px-4 py-2 bg-neutral-600/20 border border-white/5">
+                <% if (typeof images !== 'undefined' && images) { %>
+                  <% images.forEach(function(image) { %>
+                    <option value="<%= image.Image %>" class="text-neutral-800 text-sm" data-configfilepath="<%= image.ConfigFilePath %>" data-imagename="<%= image.Name %>" data-configfilecontent="<%= image.ConfigFileContent %>" data-variables="<%= JSON.stringify(image.Variables) %>"><%= image.Name %> (<%= image.Image %>)</option>
+                  <% }); %>
+                <% } %>
+              </select>
+            </div>
+            <div>
+              <label class="text-neutral-400 text-sm tracking-tight mb-2"><%= req.translations.node %>:</label>
+              <select id="node" class="rounded-xl focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-4 w-full hover:bg-white/5 px-4 py-2 bg-neutral-600/20 border border-white/5">
+                <% if (typeof nodes !== 'undefined' && nodes) { %>
+                  <% nodes.forEach(function(node) { %>
+                    <option value="<%= node.id %>" class="text-neutral-800 text-sm"><%= node.name %></option>
+                  <% }); %>
+                <% } %>
+              </select>
+            </div>
+            <div>
+              <label class="text-neutral-400 text-sm tracking-tight mb-2"><%= req.translations.memory %> (MiB):</label>
+              <input id="memory" class="rounded-xl focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-4 w-full hover:bg-white/5 px-4 py-2 bg-neutral-600/20 border border-white/5" placeholder="2048">
+            </div>
+            <div>
+              <label class="text-neutral-400 text-sm tracking-tight mb-2"><%= req.translations.cpuThreads %>:</label>
+              <input id="cpu" class="rounded-xl focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-4 w-full hover:bg-white/5 px-4 py-2 bg-neutral-600/20 border border-white/5" placeholder="1">
+            </div>
+            <div>
+              <label class="text-neutral-400 text-sm tracking-tight mb-2">Disk (MiB):</label>
+              <input id="disk" class="rounded-xl focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-4 w-full hover:bg-white/5 px-4 py-2 bg-neutral-600/20 border border-white/5" placeholder="10240">
+            </div>
+            <div>
+              <label class="text-neutral-400 text-sm tracking-tight mb-2"><%= req.translations.ports %>:</label>
+              <input id="ports" class="rounded-xl focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-4 w-full hover:bg-white/5 px-4 py-2 bg-neutral-600/20 border border-white/5" placeholder="25565:25565,8080:8080">
+            </div>
+            <div>
+              <label class="text-neutral-400 text-sm tracking-tight mb-2"><%= req.translations.primaryPort %>:</label>
+              <input id="primary" class="rounded-xl focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-4 w-full hover:bg-white/5 px-4 py-2 bg-neutral-600/20 border border-white/5" placeholder="25565">
+            </div>
+          </div>
+          <div class="mt-4">
+            <button id="createNodeBtn" type="button" class="block rounded-xl <%= theme['button-color'] %> px-3 py-2 text-center text-sm font-medium shadow-lg transition">
+              <%= req.translations.create %>
+            </button>
+          </div>
+        </form>
+      </div>
+      <div id="secondCard" class="p-3 bg-transparent shadow-xl border border-white/5 rounded-xl overflow-hidden sm:p-6 lg:p-10 card hidden" style="width: 800px;">
+        <form id="variablesForm"></form>
+      </div>
+    </div>
+  </div>
 </main>
 
-  <div id="suspendInfoModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center opacity-0 pointer-events-none transition-opacity duration-300">
-        <div class="bg-neutral-800 text-white border border-white/5 rounded-xl p-8 max-w-xl w-full transform scale-95 transition-transform duration-300 shadow-lg">
-            <h2 class="text-2xl font-semibold mb-2 text-neutral-200">Suspend Reason</h2>
-            <p class="mb-6 text-gray-700" id="modalMessage"></p>
-            <div class="flex justify-end space-x-4">
-                <button onclick="closeSuspendInfoModal()" class="px-5 py-2 bg-gray-200 text-gray-800 rounded-xl hover:bg-gray-300 transition">Close</button>
-            </div>
-        </div>
+<div id="suspendInfoModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center opacity-0 pointer-events-none transition-opacity duration-300">
+  <div class="bg-neutral-800 text-white border border-white/5 rounded-xl p-8 max-w-xl w-full transform scale-95 transition-transform duration-300 shadow-lg">
+    <h2 class="text-2xl font-semibold mb-2 text-neutral-200">Suspend Reason</h2>
+    <p class="mb-6 text-gray-700" id="modalMessage"></p>
+    <div class="flex justify-end space-x-4">
+      <button onclick="closeSuspendInfoModal()" class="px-5 py-2 bg-gray-200 text-gray-800 rounded-xl hover:bg-gray-300 transition">Close</button>
     </div>
-
-    <script>
-      function openSuspendInfoModal(message) {
-          const modal = document.getElementById('suspendInfoModal');
-          const modalMessage = document.getElementById('modalMessage');
-
-          modalMessage.innerHTML = formatMessage(message);
-          modal.classList.remove('opacity-0', 'pointer-events-none');
-          modal.classList.add('opacity-100', 'pointer-events-auto');
-      }
-
-      function closeSuspendInfoModal() {
-          const modal = document.getElementById('suspendInfoModal');
-          modal.classList.remove('opacity-100', 'pointer-events-auto');
-          modal.classList.add('opacity-0', 'pointer-events-none');
-      }
-
-      function formatMessage(message) {
-          return `
-              <div class="text-sm text-gray-600">
-                  <p class="mt-1 text-neutral-300">${message}</p>
-              </div>
-          `;
-      }
-  </script>
+  </div>
+</div>
 
 <script>
-  document.getElementById('image').addEventListener('change', function(event) {
+  function openSuspendInfoModal(message) {
+    const modal = document.getElementById('suspendInfoModal');
+    const modalMessage = document.getElementById('modalMessage');
+    if (modal && modalMessage) {
+      modalMessage.innerHTML = formatMessage(message);
+      modal.classList.remove('opacity-0', 'pointer-events-none');
+      modal.classList.add('opacity-100', 'pointer-events-auto');
+    }
+  }
+
+  function closeSuspendInfoModal() {
+    const modal = document.getElementById('suspendInfoModal');
+    if (modal) {
+      modal.classList.remove('opacity-100', 'pointer-events-auto');
+      modal.classList.add('opacity-0', 'pointer-events-none');
+    }
+  }
+
+  function formatMessage(message) {
+    return `<div class="text-sm text-gray-600"><p class="mt-1 text-neutral-300">${message}</p></div>`;
+  }
+</script>
+
+<script>
+  const imageSelect = document.getElementById('image');
+  if (imageSelect) {
+    imageSelect.addEventListener('change', function(event) {
       var selectedOption = event.target.options[event.target.selectedIndex];
+      if (!selectedOption) return;
       var variables = selectedOption.getAttribute('data-variables');
       var secondCard = document.getElementById('secondCard');
       var variablesForm = document.getElementById('variablesForm');
 
-      if (variables) {
-          secondCard.classList.remove('hidden');
-          variablesForm.innerHTML = '';
+      if (variables && secondCard && variablesForm) {
+        secondCard.classList.remove('hidden');
+        variablesForm.innerHTML = '';
+        try {
           variables = JSON.parse(variables);
-
           for (var key in variables) {
-              if (variables.hasOwnProperty(key)) {
-                  var variable = variables[key];
-                  var fieldHtml = '';
-
-                  if (variable.type === 'text') {
-                      fieldHtml = `
-                          <div>
-                              <label class="text-neutral-400 text-sm tracking-tight mb-2">${key}:</label>
-                              <input type="text" name="${key}" value="${variable.default || ''}" class="rounded-xl focus:ring-transparent focus:border-transparent text-white text-sm mt-2 mb-4 w-full hover:bg-white/5 px-4 py-2 bg-neutral-600/20 placeholder:text-white/20 border border-white/5" ${variable.required ? 'required' : ''}>
-                          </div>
-                      `;
-                  }
-
-                  variablesForm.insertAdjacentHTML('beforeend', fieldHtml);
+            if (variables.hasOwnProperty(key)) {
+              var variable = variables[key];
+              var fieldHtml = '';
+              if (variable.type === 'text') {
+                fieldHtml = `
+                  <div>
+                    <label class="text-neutral-400 text-sm tracking-tight mb-2">${key}:</label>
+                    <input type="text" name="${key}" value="${variable.default || ''}" class="rounded-xl text-white text-sm mt-2 mb-4 w-full hover:bg-white/5 px-4 py-2 bg-neutral-600/20 border border-white/5" ${variable.required ? 'required' : ''}>
+                  </div>`;
               }
+              variablesForm.insertAdjacentHTML('beforeend', fieldHtml);
+            }
           }
-      } else {
-          secondCard.classList.add('hidden');
+        } catch(e) {}
+      } else if (secondCard) {
+        secondCard.classList.add('hidden');
       }
-  });
-</script>
-<script>
-  document.getElementById('createButton').addEventListener('click', function() {
-    var table = document.getElementById('instanceTable');
-    var form = document.getElementById('instanceForm');
-    if (table.style.display !== 'none') {
-      table.style.display = 'none';
-      form.style.display = 'flex';
-    } else {
-      table.style.display = 'flex';
-      form.style.display = 'none';
-    }
-
-    const elem  = document.getElementById('image');
-    elem.selectedIndex = 0;
-    const event = new Event('change', {
-      bubbles: true,
-      cancelable: true
     });
-    elem.dispatchEvent(event);
-
-  });
-
-  document.getElementById('image').addEventListener('change', function() {
-    const selectedOption = this.options[this.selectedIndex];
-    const cmd = selectedOption.getAttribute('data-cmd');
-    const env = JSON.parse(selectedOption.getAttribute('data-env') || '{}');
-  });
+  }
 </script>
+
 <script>
-document.getElementById('createNodeBtn').addEventListener('click', async function() {
-    const createBtn = this;
-    createBtn.textContent = 'Working on it...';
-    createBtn.disabled = true;
-
-    const name = document.getElementById('name');
-    const memory = document.getElementById('memory');
-    const cpu = document.getElementById('cpu');
-    const disk = document.getElementById('disk');
-    const ports = document.getElementById('ports');
-    const imageDropdown = document.getElementById('image');
-    const primaryPort = document.getElementById('primary');
-    const selectedImage = imageDropdown.options[imageDropdown.selectedIndex];
-    const configFilePath = selectedImage.getAttribute('data-configfilepath');
-    let configFileContent = selectedImage.getAttribute('data-configfilecontent');
-    const variablesForm = document.getElementById('variablesForm');
-    
-    const inputs = variablesForm.querySelectorAll('div > input');
-    const variables = Array.from(inputs).reduce((acc, input) => {
-        if (input.name) {
-            acc[input.name] = input.value;
+  const createBtnElem = document.getElementById('createButton');
+  if (createBtnElem) {
+    createBtnElem.addEventListener('click', function() {
+      var table = document.getElementById('instanceTable');
+      var form = document.getElementById('instanceForm');
+      if (table && form) {
+        if (table.style.display !== 'none') {
+          table.style.display = 'none';
+          form.style.display = 'flex';
+        } else {
+          table.style.display = 'block';
+          form.style.display = 'none';
         }
+      }
+
+      const elem = document.getElementById('image');
+      if (elem && elem.options.length > 0) {
+        elem.selectedIndex = 0;
+        const event = new Event('change', { bubbles: true, cancelable: true });
+        elem.dispatchEvent(event);
+      }
+    });
+  }
+</script>
+
+<script>
+  const createNodeBtn = document.getElementById('createNodeBtn');
+  if (createNodeBtn) {
+    createNodeBtn.addEventListener('click', async function() {
+      const createBtn = this;
+      createBtn.textContent = 'Working on it...';
+      createBtn.disabled = true;
+
+      const name = document.getElementById('name');
+      const memory = document.getElementById('memory');
+      const cpu = document.getElementById('cpu');
+      const disk = document.getElementById('disk');
+      const ports = document.getElementById('ports');
+      const imageDropdown = document.getElementById('image');
+      const primaryPort = document.getElementById('primary');
+      const selectedImage = imageDropdown ? imageDropdown.options[imageDropdown.selectedIndex] : null;
+      const configFilePath = selectedImage ? selectedImage.getAttribute('data-configfilepath') : '';
+      let configFileContent = selectedImage ? selectedImage.getAttribute('data-configfilecontent') : '';
+      const variablesForm = document.getElementById('variablesForm');
+      
+      const inputs = variablesForm ? variablesForm.querySelectorAll('div > input') : [];
+      const variables = Array.from(inputs).reduce((acc, input) => {
+        if (input.name) { acc[input.name] = input.value; }
         return acc;
-    }, {});
+      }, {});
 
-    clearValidationErrors();
+      clearValidationErrors();
+      let isValid = true;
 
-    let isValid = true;
-
-    if (name.value.includes(' ')) {
+      if (name && name.value.includes(' ')) {
         showError(name, 'Name must not contain spaces.');
         isValid = false;
-    }
-
-    if (!isPositiveInteger(memory.value)) {
+      }
+      if (memory && !isPositiveInteger(memory.value)) {
         showError(memory, 'Memory must be an integer greater than 1.');
         isValid = false;
-    }
-
-    if (!isPositiveIntegerCpu(cpu.value)) {
+      }
+      if (cpu && !isPositiveIntegerCpu(cpu.value)) {
         showError(cpu, 'CPU must be an integer greater than 0.');
         isValid = false;
-    }
-
-    if (!isPositiveInteger(disk.value)) {
+      }
+      if (disk && !isPositiveInteger(disk.value)) {
         showError(disk, 'Disk must be an integer greater than 1.');
         isValid = false;
-    }
+      }
 
-    const portPattern = /^(\d+:\d+)(,\d+:\d+)*$/;
-    if (!ports.value.match(portPattern)) {
+      const portPattern = /^(\d+:\d+)(,\d+:\d+)*$/;
+      if (ports && !ports.value.match(portPattern)) {
         showError(ports, 'Ports must be in the format "port:port,port:port".');
         isValid = false;
-    }
+      }
 
-    if (!primaryPort.value.match(/^\d+$/)) {
+      if (primaryPort && !primaryPort.value.match(/^\d+$/)) {
         showError(primaryPort, 'Primary port must be a valid number.');
         isValid = false;
-    } else {
+      } else if (primaryPort && configFileContent) {
         configFileContent = configFileContent.replace('{{primaryPort}}', primaryPort.value);
-    }
+      }
 
-    if (!isValid) {
+      if (!isValid) {
         createBtn.textContent = 'Create';
         createBtn.disabled = false;
         return;
-    }
+      }
 
-    const nodeData = {
-        name: name.value,
-        image: imageDropdown.value,
-        imagename: selectedImage.getAttribute('data-imagename'),
-        nodeId: document.getElementById('node').value,
-        user: document.getElementById('user').value,
-        memory: memory.value,
-        cpu: cpu.value,
-        disk: disk.value,
-        ports: ports.value,
-        primary: primaryPort.value,
+      const nodeData = {
+        name: name ? name.value : '',
+        image: imageDropdown ? imageDropdown.value : '',
+        imagename: selectedImage ? selectedImage.getAttribute('data-imagename') : '',
+        nodeId: document.getElementById('node') ? document.getElementById('node').value : '',
+        user: document.getElementById('user') ? document.getElementById('user').value : '',
+        memory: memory ? memory.value : '',
+        cpu: cpu ? cpu.value : '',
+        disk: disk ? disk.value : '',
+        ports: ports ? ports.value : '',
+        primary: primaryPort ? primaryPort.value : '',
         configFilePath: configFilePath,
         configFileContent: configFileContent,
         variables: JSON.stringify(variables)
-    };
+      };
 
-    await sendData(nodeData, createBtn);
-});
+      await sendData(nodeData, createBtn);
+    });
+  }
 
-function clearValidationErrors() {
+  function clearValidationErrors() {
     const inputs = document.querySelectorAll('.input-error');
     const messages = document.querySelectorAll('.error-message');
     inputs.forEach(input => input.classList.remove('input-error'));
     messages.forEach(msg => msg.remove());
-}
+  }
 
-function serializeParams(params) {
+  function serializeParams(params) {
     return Object.keys(params)
-        .map(key => encodeURIComponent(key) + '=' + encodeURIComponent(params[key]))
-        .join('&');
-    }
+      .map(key => encodeURIComponent(key) + '=' + encodeURIComponent(params[key]))
+      .join('&');
+  }
     
-function showError(element, message) {
+  function showError(element, message) {
+    if (!element) return;
     element.classList.add('input-error');
     const errorDiv = document.createElement('div');
     errorDiv.textContent = message;
     errorDiv.className = 'error-message';
-    element.parentNode.insertBefore(errorDiv, element.nextSibling);
-}
+    if (element.parentNode) {
+      element.parentNode.insertBefore(errorDiv, element.nextSibling);
+    }
+  }
 
-function isPositiveInteger(value) {
+  function isPositiveInteger(value) {
     const num = parseInt(value, 10);
     return Number.isInteger(num) && num > 1;
-}
+  }
 
-function isPositiveIntegerCpu(value) {
+  function isPositiveIntegerCpu(value) {
     const num = parseInt(value, 10);
     return Number.isInteger(num) && num > 0;
-}
+  }
 
-function sendData(nodeData, createBtn) {
+  function sendData(nodeData, createBtn) {
     const baseUrl = '/instances/deploy';
     const queryParams = serializeParams(nodeData);
     const fullUrl = `${baseUrl}?${queryParams}`;
 
     fetch(fullUrl, {
-        method: 'GET',
-        headers: {
-            'Content-Type': 'application/json'
-        }
+      method: 'GET',
+      headers: { 'Content-Type': 'application/json' }
     })
     .then(response => {
-        if (response.ok) {
-            return response.json();
-        } else {
-            throw new Error('Failed to create instance');
-        }
+      if (response.ok) { return response.json(); }
+      else { throw new Error('Failed to create instance'); }
     })
     .then(data => {
-	window.location.href = '../admin/instances?err=CREATED'
-        console.log('Instance created:', data);
-        createBtn.textContent = 'Create';
-        createBtn.disabled = false;
+      window.location.href = '../admin/instances?err=CREATED';
     })
     .catch(error => {
-        console.error('Error creating instance:', error);
-        alert('Error! Instance creation failed. Check the console for more details.');
+      console.error('Error creating instance:', error);
+      alert('Error! Instance creation failed. Check the console for more details.');
+      if (createBtn) {
         createBtn.textContent = 'Create';
         createBtn.disabled = false;
+      }
     });
-}
-
-function handleResponse(response) {
-    if (response.ok) {
-        return response.json();
-    }
-    throw new Error('Failed to create instance');
-}
-
-function handleError(error) {
-    console.error('Error creating instance:', error);
-    alert('Error! Check the console for more details.');
-    createBtn.textContent = 'Create';
-    createBtn.disabled = false;
-}
+  }
 </script>
 <%- include('../components/footer') %>

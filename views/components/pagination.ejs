@@ -1,3 +1,6 @@
+
+<% if (typeof filters === 'undefined') { var filters = {}; } %>
+<% const safeFilters = typeof filters !== 'undefined' ? filters : {}; %>
 <%
   // Build query string with filters if they exist
   function buildPageUrl(pageNum) {

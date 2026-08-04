@@ -126,7 +126,7 @@
         const instanceData = {
             name: name.value,
             image: imageDropdown.value,
-            nodeId: '<%= instance.Node.id %>',
+            nodeId: '<%= (instance.Node && instance.Node.id) ? instance.Node.id : (typeof instance.Node === "string" ? instance.Node : instance.node || "") %>',
             user: document.getElementById('user').value,
             memory: memory.value,
             cpu: cpu.value,

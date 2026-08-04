@@ -56,5 +56,11 @@
     "browser-sync": "^2.26.2",
     "concurrently": "^8.2.2",
     "nodemon": "^3.1.10"
+  },
+  "allowScripts": {
+    "sqlite3@5.1.7": true,
+    "better-sqlite3@11.10.0": true,
+    "bcrypt@5.1.1": true,
+    "@parcel/watcher@2.5.1": true
   }
 }
