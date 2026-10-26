@@ -2,13 +2,14 @@ const express = require("express");
 const router = express.Router();
 const { db } = require("../../handlers/db.js");
 const { isUserAuthorizedForContainer } = require("../../utils/authHelper");
+const { isAuthenticated } = require("../../handlers/auth.js");
 const { loadPlugins } = require("../../plugins/loadPls.js");
 const path = require("path");
 const log = new (require("cat-loggr"))();
 
 const plugins = loadPlugins(path.join(__dirname, "../../plugins"));
 
-router.get("/instance/:id/users", async (req, res) => {
+router.get("/instance/:id/users", isAuthenticated, async (req, res) => {
   const { id } = req.params;
 
   try {
@@ -46,11 +47,24 @@ router.get("/instance/:id/users", async (req, res) => {
   }
 });
 
-router.post("/instance/:id/users/add", async (req, res) => {
+router.post("/instance/:id/users/add", isAuthenticated, async (req, res) => {
   const { id } = req.params;
   const { username } = req.body;
 
   try {
+    const instance = await db.get(`${id}_instance`);
+    if (!instance) {
+      return res.status(404).send("Instance not found.");
+    }
+
+    const isAuthorized = await isUserAuthorizedForContainer(
+      req.user.userId,
+      instance.Id
+    );
+    if (!isAuthorized) {
+      return res.status(403).send("Unauthorized access to this instance.");
+    }
+
     let users = await db.get("users");
     if (typeof users !== "object") {
       throw new Error("Users data is not in the expected format.");
@@ -71,11 +85,24 @@ router.post("/instance/:id/users/add", async (req, res) => {
   }
 });
 
-router.get("/instance/:id/users/remove/:username", async (req, res) => {
+router.get("/instance/:id/users/remove/:username", isAuthenticated, async (req, res) => {
   const { id } = req.params;
   const { username } = req.params;
 
   try {
+    const instance = await db.get(`${id}_instance`);
+    if (!instance) {
+      return res.status(404).send("Instance not found.");
+    }
+
+    const isAuthorized = await isUserAuthorizedForContainer(
+      req.user.userId,
+      instance.Id
+    );
+    if (!isAuthorized) {
+      return res.status(403).send("Unauthorized access to this instance.");
+    }
+
     let users = await db.get("users");
     if (typeof users !== "object") {
       throw new Error("Users data is not in the expected format.");
