@@ -84,14 +84,10 @@ router.post("/instance/:id/db/create/:name", async (req, res) => {
     return res.status(400).send("Name cannot be empty");
   }
 
-  if (name.length > 50) {
-    return res.status(400).send("Name cannot exceed 50 characters");
-  }
-
-  if (!/^[a-zA-Z0-9 ]+$/.test(name)) {
+  if (!/^[a-zA-Z0-9_]{1,32}$/.test(name)) {
     return res
       .status(400)
-      .send("Name can only contain alphanumeric characters and spaces");
+      .send("Invalid database name: only alphanumeric characters and underscores allowed.");
   }
 
   let instance = await db.get(id + "_instance");
@@ -161,6 +157,16 @@ router.get("/instance/:id/db/delete/:name", async (req, res) => {
   }
 
   const { id, name } = req.params;
+
+  if (!name || name.trim() === "") {
+    return res.status(400).send("Name cannot be empty");
+  }
+
+  if (!/^[a-zA-Z0-9_]{1,32}$/.test(name)) {
+    return res
+      .status(400)
+      .send("Invalid database name: only alphanumeric characters and underscores allowed.");
+  }
 
   let instance = await db.get(id + "_instance");
   if (!instance) {
